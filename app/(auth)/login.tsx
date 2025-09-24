@@ -1,20 +1,18 @@
-// app/(auth)/login.tsx
-
+import { DefaultButton } from "@/components/ui/buttons";
+import { DefaultTextInput } from "@/components/ui/textInputs";
+import { Colors } from "@/constants/theme";
 import { Authenticate } from "@/services/Login";
+import { Image } from "expo-image";
 import { Stack } from "expo-router";
 import { useState } from "react";
-import {
-  Alert,
-  StyleSheet,
-  Text,
-  TextInput,
-  TouchableOpacity,
-  View,
-} from "react-native";
+import { Alert, StyleSheet, Text, View } from "react-native";
 
 export default function LoginScreen() {
   const [email, setEmail] = useState<string>("");
   const [password, setPassword] = useState<string>("");
+  const [isLoading, setIsLoading] = useState(false);
+
+  const cattusLogo = require("@/assets/images/logo/tipo.png");
 
   const handleLogin = async () => {
     if (!email || !password) {
@@ -22,7 +20,8 @@ export default function LoginScreen() {
       return;
     }
 
-    //add setLoading(true)
+    setIsLoading(true);
+
     try {
       const auth = await Authenticate(email, password);
       if (!auth.success) {
@@ -34,6 +33,8 @@ export default function LoginScreen() {
     } catch (error) {
       Alert.alert("erro", `erro desconhecido`);
       console.log(error);
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -41,9 +42,14 @@ export default function LoginScreen() {
     <View style={styles.container}>
       <Stack.Screen options={{ title: "Login" }} />
 
-      <Text style={styles.title}>Cattus</Text>
+      <Image
+        source={cattusLogo}
+        contentFit='contain'
+        style={{ width: 240, height: 100, marginBottom: 12 }}
+        transition={1000}
+      />
 
-      <TextInput
+      <DefaultTextInput
         style={styles.input}
         placeholder='Email'
         keyboardType='email-address'
@@ -52,21 +58,20 @@ export default function LoginScreen() {
         value={email}
       />
 
-      <TextInput
+      <DefaultTextInput
         style={styles.input}
         placeholder='Senha'
-        secureTextEntry
         onChangeText={(password) => setPassword(password)}
         value={password}
+        secureTextEntry={true}
       />
 
-      <TouchableOpacity
-        style={styles.button}
-        onPress={() => {
-          handleLogin();
-        }}>
-        <Text style={styles.buttonText}>Entrar</Text>
-      </TouchableOpacity>
+      <DefaultButton
+        text='Entrar'
+        onPress={() => handleLogin()}
+        isLoading={isLoading}
+        disabled={isLoading}
+      />
 
       <Text style={styles.link}>Ainda não tem uma conta? Crie uma aqui.</Text>
     </View>
@@ -79,7 +84,7 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
     padding: 20,
-    backgroundColor: "#fff",
+    backgroundColor: Colors.defaultColors.background,
   },
   title: {
     fontSize: 24,
@@ -89,24 +94,17 @@ const styles = StyleSheet.create({
   input: {
     width: "100%",
     height: 50,
-    borderColor: "#ccc",
+    borderColor: Colors.defaultColors.gray200,
     borderWidth: 1,
     borderRadius: 8,
-    paddingHorizontal: 10,
-    marginBottom: 15,
+    paddingHorizontal: 20,
+    marginBottom: 16,
+    backgroundColor: Colors.defaultColors.gray200,
+    fontSize: 16,
   },
   link: {
     marginTop: 20,
-    color: "blue",
-  },
-  button: {
-    backgroundColor: "#007bff", // Cor de fundo do seu botão
-    paddingVertical: 15,
-    paddingHorizontal: 40,
-    borderRadius: 8,
-    width: "100%", // Para que o botão ocupe a largura total
-    alignItems: "center", // Centraliza o texto horizontalmente
-    marginTop: 10,
+    color: Colors.defaultColors.green200,
   },
   buttonText: {
     color: "#fff", // Cor do texto

@@ -1,17 +1,25 @@
+import { useColorScheme } from "@/hooks/use-color-scheme";
+import { getToken } from "@/storage/tokenManager";
+import {
+  Poppins_400Regular,
+  Poppins_700Bold,
+  useFonts,
+} from "@expo-google-fonts/poppins";
 import {
   DarkTheme,
   DefaultTheme,
   ThemeProvider,
 } from "@react-navigation/native";
-import { Stack } from "expo-router";
+import { SplashScreen, Stack } from "expo-router";
 import { StatusBar } from "expo-status-bar";
+import { useEffect, useState } from "react";
 import "react-native-reanimated";
 
-import { useColorScheme } from "@/hooks/use-color-scheme";
-import { getToken } from "@/storage/tokenManager";
-import { useEffect, useState } from "react";
+SplashScreen.preventAutoHideAsync();
 
 export default function RootLayout() {
+  const [fontsLoaded] = useFonts({ Poppins_400Regular, Poppins_700Bold });
+
   const colorScheme = useColorScheme();
   const [loading, setLoading] = useState(true);
   const [token, setToken] = useState<string | null>(null);
@@ -30,7 +38,13 @@ export default function RootLayout() {
     checkAuth();
   }, []);
 
-  if (loading) return null;
+  useEffect(() => {
+    if (fontsLoaded && !loading) {
+      SplashScreen.hideAsync();
+    }
+  }, [fontsLoaded, loading]);
+
+  if (!fontsLoaded || loading) return null;
 
   return (
     <ThemeProvider value={colorScheme === "dark" ? DarkTheme : DefaultTheme}>
@@ -47,7 +61,7 @@ export default function RootLayout() {
           <Stack.Screen name='(auth)' options={{ headerShown: false }} />
         )}
       </Stack>
-      <StatusBar style='auto' />
+      <StatusBar style='light' />
     </ThemeProvider>
   );
 }
