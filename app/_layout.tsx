@@ -1,3 +1,4 @@
+import { Colors } from "@/constants/theme";
 import { useColorScheme } from "@/hooks/use-color-scheme";
 import { getToken } from "@/storage/tokenManager";
 import {
@@ -48,7 +49,12 @@ export default function RootLayout() {
 
   return (
     <ThemeProvider value={colorScheme === "dark" ? DarkTheme : DefaultTheme}>
-      <Stack>
+      <Stack
+        screenOptions={{
+          headerShown: false,
+          contentStyle: { backgroundColor: Colors.defaultColors.background },
+          animation: "slide_from_right",
+        }}>
         {token ? (
           <>
             <Stack.Screen name='(tabs)' options={{ headerShown: false }} />

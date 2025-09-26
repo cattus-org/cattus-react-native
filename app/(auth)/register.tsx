@@ -1,5 +1,6 @@
 import { DefaultButton } from "@/components/ui/buttons";
 import { DefaultTextInput } from "@/components/ui/textInputs";
+import { Spacer } from "@/components/ui/views";
 import { Colors } from "@/constants/theme";
 import {
   RegisterSchema,
@@ -73,6 +74,7 @@ export default function RegisterScreen() {
         value={registerData.name}
         onChangeText={(name) => setRegisterData({ ...registerData, name })}
       />
+      <Spacer height={8} />
       <DefaultTextInput
         placeholder='Email'
         keyboardType='email-address'
@@ -80,6 +82,7 @@ export default function RegisterScreen() {
         value={registerData.email}
         onChangeText={(email) => setRegisterData({ ...registerData, email })}
       />
+      <Spacer height={8} />
       <DefaultTextInput
         placeholder='Senha'
         secureTextEntry={true}
@@ -89,6 +92,7 @@ export default function RegisterScreen() {
           setRegisterData({ ...registerData, password })
         }
       />
+      <Spacer height={8} />
       <DefaultTextInput
         placeholder='Senha novamente'
         secureTextEntry={true}
@@ -96,7 +100,7 @@ export default function RegisterScreen() {
         value={confirmPassword}
         onChangeText={(password) => setConfirmPassword(password)}
       />
-
+      <Spacer height={8} />
       <DefaultButton
         text='Cadastrar'
         onPress={handleRegister}

@@ -1,5 +1,5 @@
 import { Colors } from "@/constants/theme";
-import { IDefaultButton } from "@/interfaces/Buttons";
+import { IDefaultButtonProps } from "@/interfaces/Buttons";
 import {
   ActivityIndicator,
   StyleSheet,
@@ -11,7 +11,7 @@ export const DefaultButton = ({
   text,
   isLoading = false,
   ...rest
-}: IDefaultButton) => {
+}: IDefaultButtonProps) => {
   return (
     <TouchableOpacity style={style.defaultButton} {...rest}>
       {isLoading ? (
