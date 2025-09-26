@@ -3,6 +3,6 @@ export interface IApiResponse<T> {
   statusCode: number;
   timeStamp?: Date;
   path?: string;
-  message: string;
+  message: string | string[];
   data?: T;
 }

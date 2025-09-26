@@ -2,10 +2,11 @@ import { DefaultButton } from "@/components/ui/buttons";
 import { DefaultTextInput } from "@/components/ui/textInputs";
 import { Colors } from "@/constants/theme";
 import { Authenticate } from "@/services/Login";
+import { messageTransformer } from "@/utils/utils";
 import { Image } from "expo-image";
-import { Stack } from "expo-router";
+import { Link, Stack } from "expo-router";
 import { useState } from "react";
-import { Alert, StyleSheet, Text, View } from "react-native";
+import { Alert, StyleSheet, View } from "react-native";
 
 export default function LoginScreen() {
   const [email, setEmail] = useState<string>("");
@@ -25,13 +26,14 @@ export default function LoginScreen() {
     try {
       const auth = await Authenticate(email, password);
       if (!auth.success) {
-        Alert.alert("erro", `${auth.message}`);
+        const message = messageTransformer(auth.message);
+        Alert.alert("erro", message);
         return;
       }
 
       Alert.alert("Deu certo", `token: ${auth.data?.token}`);
     } catch (error) {
-      Alert.alert("erro", `erro desconhecido`);
+      Alert.alert("Erro", `erro desconhecido`);
       console.log(error);
     } finally {
       setIsLoading(false);
@@ -50,7 +52,6 @@ export default function LoginScreen() {
       />
 
       <DefaultTextInput
-        style={styles.input}
         placeholder='Email'
         keyboardType='email-address'
         autoCapitalize='none'
@@ -59,7 +60,6 @@ export default function LoginScreen() {
       />
 
       <DefaultTextInput
-        style={styles.input}
         placeholder='Senha'
         onChangeText={(password) => setPassword(password)}
         value={password}
@@ -73,7 +73,9 @@ export default function LoginScreen() {
         disabled={isLoading}
       />
 
-      <Text style={styles.link}>Ainda não tem uma conta? Crie uma aqui.</Text>
+      <Link href='/register' style={styles.link}>
+        Ainda não tem uma conta? Crie uma aqui.
+      </Link>
     </View>
   );
 }
@@ -86,29 +88,8 @@ const styles = StyleSheet.create({
     padding: 20,
     backgroundColor: Colors.defaultColors.background,
   },
-  title: {
-    fontSize: 24,
-    fontWeight: "bold",
-    marginBottom: 20,
-  },
-  input: {
-    width: "100%",
-    height: 50,
-    borderColor: Colors.defaultColors.gray200,
-    borderWidth: 1,
-    borderRadius: 8,
-    paddingHorizontal: 20,
-    marginBottom: 16,
-    backgroundColor: Colors.defaultColors.gray200,
-    fontSize: 16,
-  },
   link: {
     marginTop: 20,
     color: Colors.defaultColors.green200,
-  },
-  buttonText: {
-    color: "#fff", // Cor do texto
-    fontSize: 16,
-    fontWeight: "bold",
   },
 });
