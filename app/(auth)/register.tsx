@@ -45,7 +45,7 @@ export default function RegisterScreen() {
       setErrors(newErrors);
       Alert.alert(
         "Erro de validação",
-        messageTransformer(Object.values(newErrors))
+        messageTransformer(Object.values(errors))
       );
       setIsLoading(false);
       return;
