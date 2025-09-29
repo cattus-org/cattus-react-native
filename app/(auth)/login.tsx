@@ -2,13 +2,16 @@ import { DefaultButton } from "@/components/ui/buttons";
 import { DefaultTextInput } from "@/components/ui/textInputs";
 import { Colors } from "@/constants/theme";
 import { Authenticate } from "@/services/Login";
+import { saveToken } from "@/storage/tokenManager";
 import { messageTransformer } from "@/utils/utils";
 import { Image } from "expo-image";
-import { Link, Stack } from "expo-router";
+import { Link, Stack, useRouter } from "expo-router";
 import { useState } from "react";
 import { Alert, StyleSheet, View } from "react-native";
 
 export default function LoginScreen() {
+  const router = useRouter();
+
   const [email, setEmail] = useState<string>("");
   const [password, setPassword] = useState<string>("");
   const [isLoading, setIsLoading] = useState(false);
@@ -22,16 +25,16 @@ export default function LoginScreen() {
     }
 
     setIsLoading(true);
-
+    //TODO - adicionar validação com zod
     try {
       const auth = await Authenticate(email, password);
-      if (!auth.success) {
+      if (!auth.success || !auth.data?.token) {
         const message = messageTransformer(auth.message);
         Alert.alert("erro", message);
         return;
       }
-
-      Alert.alert("Deu certo", `token: ${auth.data?.token}`);
+      if (auth.data?.token) await saveToken(auth.data.token);
+      router.replace("/(tabs)");
     } catch (error) {
       Alert.alert("Erro", `erro desconhecido`);
       console.log(error);
