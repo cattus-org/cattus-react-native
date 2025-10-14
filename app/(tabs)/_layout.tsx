@@ -1,13 +1,19 @@
-import { Redirect, Tabs } from "expo-router";
-import React, { useEffect, useState } from "react";
-
 import { HapticTab } from "@/components/haptic-tab";
 import { IconSymbol } from "@/components/ui/icon-symbol";
+import { LoadingScreen } from "@/components/ui/loading";
+import { Colors } from "@/constants/theme";
 import { getToken } from "@/storage/tokenManager";
+import { FontAwesome, Ionicons } from "@expo/vector-icons";
+import { Redirect, Tabs } from "expo-router";
+import React, { useEffect, useState } from "react";
 
 export default function TabLayout() {
   const [token, setToken] = useState<string | null>();
   const [loading, setLoading] = useState(true);
+
+  const INACTIVE_COLOR = Colors.defaultColors.gray100;
+  const ACTIVE_COLOR = Colors.defaultColors.green300;
+  const TAB_BACKGROUND = Colors.defaultColors.black300;
 
   useEffect(() => {
     const checkAuth = async () => {
@@ -25,7 +31,7 @@ export default function TabLayout() {
   }, []);
 
   if (loading) {
-    return null;
+    return <LoadingScreen />;
   }
   if (!token) {
     return <Redirect href='/login' />;
@@ -36,22 +42,40 @@ export default function TabLayout() {
       screenOptions={{
         headerShown: false,
         tabBarButton: HapticTab,
+        tabBarActiveTintColor: ACTIVE_COLOR,
+        tabBarInactiveTintColor: INACTIVE_COLOR,
+        tabBarStyle: {
+          backgroundColor: TAB_BACKGROUND,
+          height: 60,
+          paddingBottom: 5,
+          paddingTop: 4,
+          borderTopWidth: 0,
+          elevation: 0,
+          shadowColor: "transparent",
+        },
+        tabBarLabelStyle: {
+          fontSize: 12,
+        },
       }}>
       <Tabs.Screen
         name='index'
         options={{
           title: "Home",
-          tabBarIcon: ({ color }) => (
-            <IconSymbol size={28} name='house.fill' color={color} />
+          tabBarIcon: ({ color, focused }) => (
+            <Ionicons
+              name={focused ? "home" : "home-outline"}
+              color={color}
+              size={24}
+            />
           ),
         }}
       />
       <Tabs.Screen
         name='cats-list'
         options={{
-          title: "Lista",
+          title: "Gatos",
           tabBarIcon: ({ color }) => (
-            <IconSymbol size={28} name='homepod.fill' color={color} />
+            <FontAwesome name='paw' color={color} size={24} />
           ),
         }}
       />

@@ -1,3 +1,4 @@
+import { LoadingScreen } from "@/components/ui/loading";
 import { Colors } from "@/constants/theme";
 import { useColorScheme } from "@/hooks/use-color-scheme";
 import { getToken } from "@/storage/tokenManager";
@@ -11,7 +12,7 @@ import {
   DefaultTheme,
   ThemeProvider,
 } from "@react-navigation/native";
-import { SplashScreen, Stack } from "expo-router";
+import { SplashScreen, Stack, useRouter } from "expo-router";
 import { StatusBar } from "expo-status-bar";
 import { useEffect, useState } from "react";
 import "react-native-reanimated";
@@ -20,16 +21,18 @@ SplashScreen.preventAutoHideAsync();
 
 export default function RootLayout() {
   const [fontsLoaded] = useFonts({ Poppins_400Regular, Poppins_700Bold });
-
   const colorScheme = useColorScheme();
   const [loading, setLoading] = useState(true);
   const [token, setToken] = useState<string | null>(null);
+  const router = useRouter();
 
   useEffect(() => {
     const checkAuth = async () => {
       try {
         const savedToken = await getToken();
         setToken(savedToken);
+
+        //TODO - adicionar validação de token valido
       } catch (error) {
         console.log("failed to find token ", error);
       } finally {
@@ -42,10 +45,15 @@ export default function RootLayout() {
   useEffect(() => {
     if (fontsLoaded && !loading) {
       SplashScreen.hideAsync();
+      if (token) {
+        router.replace("/(tabs)");
+      } else {
+        router.replace("/(auth)/login");
+      }
     }
-  }, [fontsLoaded, loading]);
+  }, [fontsLoaded, loading, token]);
 
-  if (!fontsLoaded || loading) return null;
+  if (!fontsLoaded || loading) return <LoadingScreen />;
 
   return (
     <ThemeProvider value={colorScheme === "dark" ? DarkTheme : DefaultTheme}>
@@ -55,17 +63,12 @@ export default function RootLayout() {
           contentStyle: { backgroundColor: Colors.defaultColors.background },
           animation: "slide_from_right",
         }}>
-        {token ? (
-          <>
-            <Stack.Screen name='(tabs)' options={{ headerShown: false }} />
-            <Stack.Screen
-              name='modal'
-              options={{ presentation: "modal", title: "Modal" }}
-            />
-          </>
-        ) : (
-          <Stack.Screen name='(auth)' options={{ headerShown: false }} />
-        )}
+        <Stack.Screen name='(tabs)' options={{ headerShown: false }} />
+        <Stack.Screen
+          name='modal'
+          options={{ presentation: "modal", title: "Modal" }}
+        />
+        <Stack.Screen name='(auth)' options={{ headerShown: false }} />
       </Stack>
       <StatusBar style='light' />
     </ThemeProvider>
