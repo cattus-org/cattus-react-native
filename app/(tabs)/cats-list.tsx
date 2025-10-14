@@ -1,17 +1,12 @@
 import { DefaultButton } from "@/components/ui/buttons";
 import { CatCard } from "@/components/ui/cats";
+import { LoadingScreen } from "@/components/ui/loading";
 import { Colors } from "@/constants/theme";
 import { ICat } from "@/interfaces/Cats";
 import { getCats } from "@/services/Cats";
 import { Stack } from "expo-router";
 import { useEffect, useState } from "react";
-import {
-  ActivityIndicator,
-  FlatList,
-  StyleSheet,
-  Text,
-  View,
-} from "react-native";
+import { FlatList, StyleSheet, Text, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
 export default function CatsList() {
@@ -56,11 +51,7 @@ export default function CatsList() {
         </Text>
       </View>
       {isLoading ? (
-        <ActivityIndicator
-          size='large'
-          color={Colors.defaultColors.green300}
-          style={{ marginTop: 50 }}
-        />
+        <LoadingScreen />
       ) : (
         <FlatList
           data={cats}
@@ -68,6 +59,8 @@ export default function CatsList() {
           keyExtractor={(item) => item.id.toString()}
           numColumns={2}
           contentContainerStyle={styles.listContent}
+          refreshing={isLoading}
+          onRefresh={fetchCats}
         />
       )}
     </SafeAreaView>
@@ -77,7 +70,7 @@ export default function CatsList() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#fff",
+    backgroundColor: Colors.defaultColors.background,
   },
   header: {
     padding: 16,
