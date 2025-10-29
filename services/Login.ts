@@ -1,6 +1,8 @@
 import { API_URL } from "@/constants/api";
 import { IApiResponse } from "@/interfaces/ApiResponse";
 import { IAuth } from "@/interfaces/Login";
+import { IUser } from "@/interfaces/Users";
+import { getToken } from "@/storage/tokenManager";
 
 export const Authenticate = async (
   email: string,
@@ -15,5 +17,19 @@ export const Authenticate = async (
   });
 
   const response: IApiResponse<IAuth> = await login.json();
+  return response;
+};
+
+export const VerifyToken = async () => {
+  const token = await getToken();
+  const tokenValidation = await fetch(`${API_URL}/auth`, {
+    method: "GET",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${token!}`,
+    },
+  });
+
+  const response: IApiResponse<IUser> = await tokenValidation.json();
   return response;
 };

@@ -1,13 +1,12 @@
-import { DefaultButton } from "@/components/ui/buttons";
 import { CatCard } from "@/components/ui/cats";
+import { AppHeader } from "@/components/ui/headers";
 import { LoadingScreen } from "@/components/ui/loading";
 import { Colors } from "@/constants/theme";
 import { ICat } from "@/interfaces/Cats";
 import { getCats } from "@/services/Cats";
 import { Stack } from "expo-router";
 import { useEffect, useState } from "react";
-import { FlatList, StyleSheet, Text, View } from "react-native";
-import { SafeAreaView } from "react-native-safe-area-context";
+import { Alert, FlatList, StyleSheet, View } from "react-native";
 
 export default function CatsList() {
   const [cats, setCats] = useState<ICat[]>([]);
@@ -19,6 +18,7 @@ export default function CatsList() {
     setError(null);
     try {
       const catsList = await getCats();
+      console.log(catsList);
       if (catsList.data) {
         setCats(catsList.data);
       } else {
@@ -32,6 +32,15 @@ export default function CatsList() {
     }
   };
 
+  // jogar as funções disso num arquivo separado pra importar e usar?
+  const handleNotification = () => {
+    Alert.alert("clicou em notificações");
+  };
+
+  const handleProfile = () => {
+    Alert.alert("clicou em perfil");
+  };
+
   useEffect(() => {
     fetchCats();
   }, []);
@@ -41,15 +50,14 @@ export default function CatsList() {
   //se não tiver gato, retornar um "nenhum gato encontrado"
   //TODO - adicionar safeareaview em todas as telas
   return (
-    <SafeAreaView style={styles.container}>
+    <View style={styles.container}>
       <Stack.Screen options={{ title: "Gatos", headerShown: false }} />
-      <View style={styles.header}>
-        <Text style={styles.screenTitle}>Gatos</Text>
-        <DefaultButton text='Todos' onPress={() => {}} />
-        <Text style={styles.resultsText}>
-          Exibindo {cats.length} resultados
-        </Text>
-      </View>
+      <AppHeader
+        onNotificationPress={handleNotification}
+        onProfilePress={handleProfile}
+        profileImageUrl='https://www.petsupport.com.br/wp-content/uploads/2022/02/pelo-do-gato-1024x640.jpg'
+        title='Gatos'
+      />
       {isLoading ? (
         <LoadingScreen />
       ) : (
@@ -63,7 +71,7 @@ export default function CatsList() {
           onRefresh={fetchCats}
         />
       )}
-    </SafeAreaView>
+    </View>
   );
 }
 

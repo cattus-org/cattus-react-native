@@ -1,6 +1,7 @@
 import { LoadingScreen } from "@/components/ui/loading";
 import { Colors } from "@/constants/theme";
 import { useColorScheme } from "@/hooks/use-color-scheme";
+import { VerifyToken } from "@/services/Login";
 import { getToken } from "@/storage/tokenManager";
 import {
   Poppins_400Regular,
@@ -32,7 +33,10 @@ export default function RootLayout() {
         const savedToken = await getToken();
         setToken(savedToken);
 
-        //TODO - adicionar validação de token valido
+        if (token) {
+          const tokenResponse = await VerifyToken();
+          if (!tokenResponse.success) router.replace("/(auth)/login");
+        }
       } catch (error) {
         console.log("failed to find token ", error);
       } finally {
