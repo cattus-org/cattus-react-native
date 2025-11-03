@@ -6,7 +6,6 @@ import { SafeAreaView } from "react-native-safe-area-context";
 
 interface AppHeaderProps {
   title: string;
-  profileImageUrl: string;
   onNotificationPress: () => void;
   onProfilePress: () => void;
   notificationCount?: number;
@@ -14,13 +13,12 @@ interface AppHeaderProps {
 
 export const AppHeader = ({
   title,
-  profileImageUrl,
   onNotificationPress,
   onProfilePress,
   notificationCount = 0,
 }: AppHeaderProps) => {
   const fallbackImage =
-    "https://www.petsupport.com.br/wp-content/uploads/2022/02/pelo-do-gato-1024x640.jpg";
+    "https://images.fineartamerica.com/images-medium-large-5/serious-cat-square-dog-photography.jpg";
 
   return (
     <SafeAreaView style={styles.safeContainer}>
@@ -30,9 +28,9 @@ export const AppHeader = ({
           style={styles.profileContainer}>
           <Image
             style={styles.profileImage}
-            source={{ uri: profileImageUrl || fallbackImage }}
+            source={{ uri: fallbackImage }}
             contentFit='cover'
-            placeholder={profileImageUrl || fallbackImage}
+            placeholder='profile picture'
           />
         </TouchableOpacity>
 
@@ -46,7 +44,7 @@ export const AppHeader = ({
             size={28}
             color={Colors.defaultColors.gray100}
           />
-          {notificationCount && notificationCount > 0 && (
+          {!!notificationCount && (
             <View style={styles.badge}>
               <Text style={styles.badgeText}>
                 {notificationCount > 9 ? "9+" : notificationCount}

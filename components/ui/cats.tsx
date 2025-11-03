@@ -30,9 +30,6 @@ export const CatCard = ({ cat }: { cat: ICat }) => {
           </Text>
           <View style={styles.detailsRow}>
             <Text style={styles.detailText}>{cat.sex}</Text>
-            {/* <Text style={styles.detailText}>
-              Nascimento {cat.birthDate.toLocaleDateString()}
-            </Text> */}
           </View>
         </View>
       </View>

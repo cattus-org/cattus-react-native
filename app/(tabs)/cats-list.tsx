@@ -18,7 +18,6 @@ export default function CatsList() {
     setError(null);
     try {
       const catsList = await getCats();
-      console.log(catsList);
       if (catsList.data) {
         setCats(catsList.data);
       } else {
@@ -55,7 +54,6 @@ export default function CatsList() {
       <AppHeader
         onNotificationPress={handleNotification}
         onProfilePress={handleProfile}
-        profileImageUrl='https://www.petsupport.com.br/wp-content/uploads/2022/02/pelo-do-gato-1024x640.jpg'
         title='Gatos'
       />
       {isLoading ? (
