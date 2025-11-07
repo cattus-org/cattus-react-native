@@ -19,7 +19,16 @@ export default function CatsList() {
     try {
       const catsList = await getCats();
       if (catsList.data) {
-        setCats(catsList.data);
+        const favoriteCats: ICat[] = [];
+        const nonFavoriteCats: ICat[] = [];
+        for (const cat of catsList.data) {
+          if (cat.favorite) {
+            favoriteCats.push(cat);
+          } else {
+            nonFavoriteCats.push(cat);
+          }
+        }
+        setCats([...favoriteCats, ...nonFavoriteCats]);
       } else {
         setError("fail to find cats");
       }
