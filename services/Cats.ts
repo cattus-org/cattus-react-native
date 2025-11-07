@@ -16,3 +16,31 @@ export const getCats = async () => {
   const response: IApiResponse<ICat[]> = await catsResponse.json();
   return response;
 };
+
+export const getCatById = async (id: number) => {
+  const token = await getToken();
+  const catResponse = await fetch(`${API_URL}/cats/${id}`, {
+    method: "GET",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${token!}`,
+    },
+  });
+
+  const response: IApiResponse<ICat> = await catResponse.json();
+  return response;
+};
+
+export const updateFavorite = async (id: number) => {
+  const token = await getToken();
+  const catResponse = await fetch(`${API_URL}/cats/${id}/change-favorite`, {
+    method: "PATCH",
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
+
+  const response: IApiResponse<ICat> = await catResponse.json();
+
+  return response;
+};

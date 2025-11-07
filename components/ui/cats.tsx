@@ -1,8 +1,11 @@
 import { Colors } from "@/constants/theme";
 import { ICat } from "@/interfaces/Cats";
+import { updateFavorite } from "@/services/Cats";
 import { AntDesign } from "@expo/vector-icons";
 import { Image } from "expo-image";
-import { StyleSheet, Text, View } from "react-native";
+import { useRouter } from "expo-router";
+import { useState } from "react";
+import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
 
 const STATUS_COLORS = {
   ok: Colors.defaultColors.ok,
@@ -12,28 +15,56 @@ const STATUS_COLORS = {
 };
 
 export const CatCard = ({ cat }: { cat: ICat }) => {
+  const router = useRouter();
+  const [isFavorite, setIsFavorite] = useState(cat.favorite);
+
   const status = cat.status ?? "UNDEFINED";
   const statusColor = STATUS_COLORS[status];
   const imageSource = cat.picture;
 
+  const navigateToDetails = () => {
+    router.push({ pathname: "/(pages)/cats/[id]", params: { id: cat.id } });
+  };
+
+  const toggleFavorite = async () => {
+    await updateFavorite(cat.id);
+    setIsFavorite(!isFavorite);
+  };
+
   return (
-    <View style={styles.cardContainer}>
-      <View style={styles.cardContent}>
+    <TouchableOpacity style={styles.cardContainer} onPress={navigateToDetails}>
+      <View
+        style={[
+          styles.cardContent,
+          { borderColor: Colors.defaultColors.white100 },
+        ]}>
         <Image source={imageSource} style={styles.image} contentFit='cover' />
         <View style={[styles.statusDot, { backgroundColor: statusColor }]} />
-        <View style={styles.favoriteStar}>
-          <AntDesign name='star' size={18} color='white' />
-        </View>
+        <TouchableOpacity style={styles.favoriteStar} onPress={toggleFavorite}>
+          <AntDesign
+            name='star'
+            size={18}
+            color={isFavorite ? Colors.defaultColors.alert : "white"}
+          />
+        </TouchableOpacity>
         <View style={styles.infoBox}>
-          <Text style={styles.nameText} numberOfLines={1}>
+          <Text
+            style={[styles.nameText, { color: Colors.defaultColors.white100 }]}
+            numberOfLines={1}>
             {cat.name}
           </Text>
           <View style={styles.detailsRow}>
-            <Text style={styles.detailText}>{cat.sex}</Text>
+            <Text
+              style={[
+                styles.detailText,
+                { color: Colors.defaultColors.white100 },
+              ]}>
+              {cat.sex}
+            </Text>
           </View>
         </View>
       </View>
-    </View>
+    </TouchableOpacity>
   );
 };
 
@@ -44,14 +75,15 @@ const styles = StyleSheet.create({
     maxWidth: "50%",
   },
   cardContent: {
-    borderRadius: 12,
+    borderRadius: 8,
     overflow: "hidden",
-    backgroundColor: "#fff",
+    backgroundColor: Colors.defaultColors.black300,
     elevation: 3,
     shadowColor: "#000",
     shadowOffset: { width: 0, height: 1 },
     shadowOpacity: 0.22,
     shadowRadius: 2.22,
+    borderWidth: 1,
   },
   image: {
     width: "100%",
@@ -61,11 +93,11 @@ const styles = StyleSheet.create({
     position: "absolute",
     top: 10,
     left: 10,
-    width: 12,
-    height: 12,
-    borderRadius: 6,
+    width: 16,
+    height: 16,
+    borderRadius: 20,
     zIndex: 10,
-    borderWidth: 2,
+    borderWidth: 1,
     borderColor: "white",
   },
   favoriteStar: {
@@ -92,7 +124,6 @@ const styles = StyleSheet.create({
   },
   detailText: {
     fontSize: 12,
-    color: "#666",
   },
   cidText: {
     fontSize: 12,

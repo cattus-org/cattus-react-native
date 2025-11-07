@@ -8,11 +8,7 @@ import {
   Poppins_700Bold,
   useFonts,
 } from "@expo-google-fonts/poppins";
-import {
-  DarkTheme,
-  DefaultTheme,
-  ThemeProvider,
-} from "@react-navigation/native";
+import { DarkTheme, ThemeProvider } from "@react-navigation/native";
 import { SplashScreen, Stack, useRouter } from "expo-router";
 import { StatusBar } from "expo-status-bar";
 import { useEffect, useState } from "react";
@@ -60,7 +56,7 @@ export default function RootLayout() {
   if (!fontsLoaded || loading) return <LoadingScreen />;
 
   return (
-    <ThemeProvider value={colorScheme === "dark" ? DarkTheme : DefaultTheme}>
+    <ThemeProvider value={colorScheme === "dark" ? DarkTheme : DarkTheme}>
       <Stack
         screenOptions={{
           headerShown: false,
@@ -73,6 +69,7 @@ export default function RootLayout() {
           options={{ presentation: "modal", title: "Modal" }}
         />
         <Stack.Screen name='(auth)' options={{ headerShown: false }} />
+        <Stack.Screen name='(pages)' options={{ headerShown: false }} />
       </Stack>
       <StatusBar style='light' />
     </ThemeProvider>

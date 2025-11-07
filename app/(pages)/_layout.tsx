@@ -1,13 +1,11 @@
 import { HapticTab } from "@/components/haptic-tab";
-import { IconSymbol } from "@/components/ui/icon-symbol";
 import { LoadingScreen } from "@/components/ui/loading";
 import { Colors } from "@/constants/theme";
 import { getToken } from "@/storage/tokenManager";
-import { FontAwesome, Ionicons } from "@expo/vector-icons";
 import { Redirect, Tabs } from "expo-router";
 import React, { useEffect, useState } from "react";
 
-export default function TabLayout() {
+export default function PagesLayout() {
   const [token, setToken] = useState<string | null>();
   const [loading, setLoading] = useState(true);
 
@@ -46,7 +44,7 @@ export default function TabLayout() {
         tabBarInactiveTintColor: INACTIVE_COLOR,
         tabBarStyle: {
           backgroundColor: TAB_BACKGROUND,
-          height: 60,
+          height: 0,
           paddingBottom: 5,
           paddingTop: 4,
           borderTopWidth: 0,
@@ -57,43 +55,7 @@ export default function TabLayout() {
           fontSize: 12,
         },
       }}>
-      <Tabs.Screen
-        name='index'
-        options={{
-          title: "Home",
-          tabBarIcon: ({ color, focused }) => (
-            <Ionicons
-              name={focused ? "home" : "home-outline"}
-              color={color}
-              size={24}
-            />
-          ),
-        }}
-      />
-      <Tabs.Screen
-        name='cats-list'
-        options={{
-          title: "Gatos",
-          tabBarIcon: ({ color }) => (
-            <FontAwesome name='paw' color={color} size={24} />
-          ),
-        }}
-      />
-      <Tabs.Screen
-        name='explore'
-        options={{
-          title: "Explore",
-          tabBarIcon: ({ color }) => (
-            <IconSymbol size={28} name='paperplane.fill' color={color} />
-          ),
-        }}
-      />
-      <Tabs.Screen
-        name='cats/[id]'
-        options={{
-          tabBarButton: () => null,
-        }}
-      />
+      <Tabs.Screen name='cats/[id]' />
     </Tabs>
   );
 }
