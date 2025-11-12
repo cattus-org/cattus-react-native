@@ -1,5 +1,5 @@
 import { Colors } from "@/constants/theme";
-import { IDefaultButtonProps } from "@/interfaces/Buttons";
+import { IDefaultButtonProps } from "@/interfaces/components/Buttons";
 import {
   ActivityIndicator,
   StyleSheet,

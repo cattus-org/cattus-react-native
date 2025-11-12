@@ -1,6 +1,6 @@
 import { LoadingScreen } from "@/components/ui/loading";
 import { Colors } from "@/constants/theme";
-import { ICat } from "@/interfaces/Cats";
+import { ICat } from "@/interfaces/api/Cats";
 import { getCatById } from "@/services/Cats";
 import { Ionicons } from "@expo/vector-icons";
 import { Image } from "expo-image";

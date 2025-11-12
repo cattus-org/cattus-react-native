@@ -6,7 +6,7 @@ import {
   RegisterSchema,
   TRegisterForm,
 } from "@/domain/validators/fieldsValidators";
-import { IRegisterUser } from "@/interfaces/Register";
+import { IRegisterUser } from "@/interfaces/api/Register";
 import { RegisterUser } from "@/services/Register";
 import { messageTransformer } from "@/utils/utils";
 import { useState } from "react";

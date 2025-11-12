@@ -1,7 +1,7 @@
 import { API_URL } from "@/constants/api";
-import { IApiResponse } from "@/interfaces/ApiResponse";
-import { IAuth } from "@/interfaces/Login";
-import { IUser } from "@/interfaces/Users";
+import { IApiResponse } from "@/interfaces/api/ApiResponse";
+import { IAuth } from "@/interfaces/api/Login";
+import { IUser } from "@/interfaces/api/Users";
 import { getToken } from "@/storage/tokenManager";
 
 export const Authenticate = async (

@@ -1,4 +1,4 @@
-import { ISpacerProps } from "@/interfaces/Views";
+import { ISpacerProps } from "@/interfaces/components/Views";
 import { View } from "react-native";
 
 export const Spacer = ({ height = 0, width = 0 }: ISpacerProps) => {

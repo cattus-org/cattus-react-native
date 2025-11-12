@@ -2,7 +2,7 @@ import { CatCard } from "@/components/ui/cats";
 import { AppHeader } from "@/components/ui/headers";
 import { LoadingScreen } from "@/components/ui/loading";
 import { Colors } from "@/constants/theme";
-import { ICat } from "@/interfaces/Cats";
+import { ICat } from "@/interfaces/api/Cats";
 import { getCats } from "@/services/Cats";
 import { Stack } from "expo-router";
 import { useEffect, useState } from "react";

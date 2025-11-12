@@ -1,5 +1,5 @@
 import { Colors } from "@/constants/theme";
-import { ICat } from "@/interfaces/Cats";
+import { ICat } from "@/interfaces/api/Cats";
 import { updateFavorite } from "@/services/Cats";
 import { AntDesign } from "@expo/vector-icons";
 import { Image } from "expo-image";
