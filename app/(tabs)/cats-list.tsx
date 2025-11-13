@@ -1,17 +1,21 @@
 import { CatCard } from "@/components/ui/cats";
+import { ExpandableFab } from "@/components/ui/fab";
 import { AppHeader } from "@/components/ui/headers";
 import { LoadingScreen } from "@/components/ui/loading";
 import { Colors } from "@/constants/theme";
 import { ICat } from "@/interfaces/api/Cats";
 import { getCats } from "@/services/Cats";
-import { Stack } from "expo-router";
-import { useEffect, useState } from "react";
+import { Stack, useRouter } from "expo-router";
+import { useEffect, useRef, useState } from "react";
 import { Alert, FlatList, StyleSheet, View } from "react-native";
 
 export default function CatsList() {
   const [cats, setCats] = useState<ICat[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+
+  const router = useRouter();
+  const flatListRef = useRef(null);
 
   const fetchCats = async () => {
     setIsLoading(true);
@@ -49,6 +53,28 @@ export default function CatsList() {
     Alert.alert("clicou em perfil");
   };
 
+  const handleCatRegister = () => {
+    Alert.alert("clicou em adicionar gato");
+  };
+
+  const fabOptions = [
+    {
+      iconName: "search-outline" as const,
+      onPress: handleCatRegister,
+      color: Colors.defaultColors.gray100, // Cinza
+    },
+    {
+      iconName: "options-outline" as const,
+      onPress: handleCatRegister,
+      color: Colors.defaultColors.alert, // Vermelho/Alerta
+    },
+    {
+      iconName: "paw-outline" as const, // Ícone de adicionar para gatos
+      onPress: handleCatRegister,
+      color: Colors.defaultColors.green400, // Verde
+    },
+  ].reverse();
+
   useEffect(() => {
     fetchCats();
   }, []);
@@ -69,6 +95,7 @@ export default function CatsList() {
         <LoadingScreen />
       ) : (
         <FlatList
+          ref={flatListRef}
           data={cats}
           renderItem={renderCat}
           keyExtractor={(item) => item.id.toString()}
@@ -78,6 +105,7 @@ export default function CatsList() {
           onRefresh={fetchCats}
         />
       )}
+      <ExpandableFab options={fabOptions} />
     </View>
   );
 }
