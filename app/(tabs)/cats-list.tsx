@@ -54,7 +54,7 @@ export default function CatsList() {
   };
 
   const handleCatRegister = () => {
-    Alert.alert("clicou em adicionar gato");
+    router.push({ pathname: "/(pages)/cats/cat-register" });
   };
 
   const fabOptions = [
@@ -65,12 +65,12 @@ export default function CatsList() {
     },
     {
       iconName: "options-outline" as const,
-      onPress: handleCatRegister,
+      onPress: () => {},
       color: Colors.defaultColors.alert, // Vermelho/Alerta
     },
     {
       iconName: "paw-outline" as const, // Ícone de adicionar para gatos
-      onPress: handleCatRegister,
+      onPress: () => {},
       color: Colors.defaultColors.green400, // Verde
     },
   ].reverse();

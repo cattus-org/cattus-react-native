@@ -88,12 +88,6 @@ export default function TabLayout() {
           ),
         }}
       />
-      <Tabs.Screen
-        name='cats/[id]'
-        options={{
-          tabBarButton: () => null,
-        }}
-      />
     </Tabs>
   );
 }
