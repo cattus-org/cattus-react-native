@@ -5,10 +5,19 @@ import { ThemedView } from "@/components/themed-view";
 import { Collapsible } from "@/components/ui/collapsible";
 import { IconSymbol } from "@/components/ui/icon-symbol";
 import { Fonts } from "@/constants/theme";
+import { removeToken } from "@/storage/tokenManager";
 import { Image } from "expo-image";
-import { Platform, StyleSheet } from "react-native";
+import { useRouter } from "expo-router";
+import { Button, Platform, StyleSheet } from "react-native";
 
 export default function TabTwoScreen() {
+  const router = useRouter();
+
+  const logout = async () => {
+    await removeToken();
+    router.replace("/(auth)/login");
+  };
+
   return (
     <ParallaxScrollView
       headerBackgroundColor={{ light: "#D0D0D0", dark: "#353636" }}
@@ -66,6 +75,7 @@ export default function TabTwoScreen() {
           source={require("@/assets/images/react-logo.png")}
           style={{ width: 100, height: 100, alignSelf: "center" }}
         />
+        <Button title='sair' onPress={logout} />
         <ExternalLink href='https://reactnative.dev/docs/images'>
           <ThemedText type='link'>Learn more</ThemedText>
         </ExternalLink>

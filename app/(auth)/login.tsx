@@ -1,8 +1,9 @@
 import { DefaultButton } from "@/components/ui/buttons";
 import { DefaultTextInput } from "@/components/ui/textInputs";
 import { Colors } from "@/constants/theme";
-import { Authenticate } from "@/services/Login";
+import { Authenticate, VerifyToken } from "@/services/Login";
 import { saveToken } from "@/storage/tokenManager";
+import { saveUserData } from "@/storage/userDataManager";
 import { messageTransformer } from "@/utils/utils";
 import { Image } from "expo-image";
 import { Link, Stack, useRouter } from "expo-router";
@@ -34,6 +35,9 @@ export default function LoginScreen() {
         return;
       }
       if (auth.data?.token) await saveToken(auth.data.token);
+      const userData = await VerifyToken();
+      if (userData.data) await saveUserData(userData.data);
+
       router.replace("/(tabs)");
     } catch (error) {
       Alert.alert("Erro", `erro desconhecido`);
