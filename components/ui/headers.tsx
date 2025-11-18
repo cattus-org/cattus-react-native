@@ -1,22 +1,27 @@
 import { Colors } from "@/constants/theme";
 import { Ionicons } from "@expo/vector-icons";
 import { Image } from "expo-image";
+import { useRouter } from "expo-router";
 import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
 interface AppHeaderProps {
   title: string;
-  onNotificationPress: () => void;
-  onProfilePress: () => void;
+  onNotificationPress?: () => void;
+  onProfilePress?: () => void;
   notificationCount?: number;
 }
 
 export const AppHeader = ({
   title,
-  onNotificationPress,
-  onProfilePress,
+  onNotificationPress = () => {},
+  onProfilePress = () => {},
   notificationCount = 0,
 }: AppHeaderProps) => {
+  const router = useRouter();
+
+  const navigateToProfile = () => router.push({ pathname: "/(pages)/profile" });
+
   const fallbackImage =
     "https://images.fineartamerica.com/images-medium-large-5/serious-cat-square-dog-photography.jpg";
 
@@ -24,7 +29,7 @@ export const AppHeader = ({
     <SafeAreaView style={styles.safeContainer}>
       <View style={styles.headerContainer}>
         <TouchableOpacity
-          onPress={onProfilePress}
+          onPress={navigateToProfile}
           style={styles.profileContainer}>
           <Image
             style={styles.profileImage}

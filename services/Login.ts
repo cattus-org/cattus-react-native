@@ -30,6 +30,6 @@ export const VerifyToken = async () => {
     },
   });
 
-  const response: IApiResponse<IUser> = await tokenValidation.json();
-  return response;
+  const response: IApiResponse<{ data: IUser }> = await tokenValidation.json();
+  return response.data;
 };

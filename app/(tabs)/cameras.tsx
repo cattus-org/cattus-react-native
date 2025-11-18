@@ -102,7 +102,7 @@ export default function CamerasScreen() {
       <View style={styles.safeContainer}>
         <Stack.Screen options={{ headerShown: false }} />
         <AppHeader
-          title='Câmeras'
+          title='Cameras'
           onNotificationPress={() => {}}
           onProfilePress={() => {}}
         />
@@ -129,7 +129,7 @@ export default function CamerasScreen() {
       <Stack.Screen options={{ headerShown: false }} />
 
       <AppHeader
-        title='Câmeras'
+        title='Cameras'
         onNotificationPress={() => {}}
         onProfilePress={() => {}}
       />

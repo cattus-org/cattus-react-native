@@ -57,6 +57,7 @@ export default function PagesLayout() {
       }}>
       <Tabs.Screen name='cats/[id]' />
       <Tabs.Screen name='cats/cat-register' />
+      <Tabs.Screen name='profile/index' />
     </Tabs>
   );
 }
