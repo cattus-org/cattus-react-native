@@ -72,7 +72,7 @@ const styles = StyleSheet.create({
   cardContainer: {
     flex: 1,
     padding: 8,
-    maxWidth: "50%",
+    //maxWidth: "50%",
   },
   cardContent: {
     borderRadius: 8,

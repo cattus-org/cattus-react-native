@@ -8,7 +8,8 @@ export async function saveUserData(user: IUser) {
 export async function getUserData() {
   const userDataString = await AsyncStorage.getItem("userData");
   if (!userDataString) return null;
-  const userData: IUser = await JSON.parse(userDataString!);
+  const jsonParsed = await JSON.parse(userDataString!);
+  const userData: IUser = jsonParsed.user;
   return userData;
 }
 

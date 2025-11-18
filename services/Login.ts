@@ -22,7 +22,7 @@ export const Authenticate = async (
 
 export const VerifyToken = async () => {
   const token = await getToken();
-  const tokenValidation = await fetch(`${API_URL}/auth`, {
+  const tokenValidation = await fetch(`${API_URL}/auth/verify`, {
     method: "GET",
     headers: {
       "Content-Type": "application/json",

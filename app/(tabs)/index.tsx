@@ -1,7 +1,5 @@
-// app/(tabs)/home.tsx
-
 import { CatCard } from "@/components/ui/cats";
-import { AppHeader } from "@/components/ui/headers"; // Seu componente Header
+import { AppHeader } from "@/components/ui/headers";
 import { Colors } from "@/constants/theme";
 import { ICat } from "@/interfaces/api/Cats";
 import { getCats } from "@/services/Cats";
@@ -16,7 +14,6 @@ import {
   TouchableOpacity,
   View,
 } from "react-native";
-import { SafeAreaView } from "react-native-safe-area-context";
 
 interface Camera {
   id: number;
@@ -75,7 +72,7 @@ const ServiceItem = ({
     />
     <Text style={serviceStyles.title}>{title}</Text>
     <Ionicons
-      name='chevron-forward'
+      name='chevron-forward-outline'
       size={24}
       color={Colors.defaultColors.gray200}
     />
@@ -89,7 +86,6 @@ export default function HomeScreen() {
   const [error, setError] = useState<string | null>(null);
   const [cats, setCats] = useState<ICat[] | null>(null);
 
-  // Handlers para os serviços
   const navigateToRegister = () =>
     router.push({ pathname: "/(pages)/cats/cat-register" });
   const navigateToStats = () => console.log("Visualizar Estatísticas");
@@ -98,6 +94,7 @@ export default function HomeScreen() {
 
   const handleGetUserData = async () => {
     const userData = await getUserData();
+    console.log(userData);
     if (userData) setUserName(userData.name);
   };
 
@@ -134,31 +131,23 @@ export default function HomeScreen() {
   }, []);
 
   return (
-    <SafeAreaView style={styles.safeContainer}>
+    <View style={styles.safeContainer}>
       <Stack.Screen options={{ headerShown: false }} />
-
-      {/* Header */}
       <AppHeader
-        title='Início'
-        onNotificationPress={() => {
-          /* ... */
-        }}
-        onProfilePress={() => {
-          /* ... */
-        }}
-        notificationCount={4}
+        title='Home'
+        onNotificationPress={() => {}}
+        onProfilePress={() => {}}
       />
 
       <ScrollView contentContainerStyle={styles.scrollContent}>
-        {/* 1. Saudação */}
-        <Text style={styles.greetingText}>Bem-vindo, {userName}!</Text>
-        {/* 2. Gatos Favoritos */}
+        <Text style={styles.greetingText}>Welcome, {userName}!</Text>
+
         <View style={styles.section}>
           <View style={styles.sectionHeader}>
-            <Text style={styles.sectionTitle}>Gatos favoritos</Text>
+            <Text style={styles.sectionTitle}>Favorite cats</Text>
             <TouchableOpacity
               onPress={() => router.push({ pathname: "/(tabs)/cats-list" })}>
-              <Text style={styles.moreText}>Mais gatos →</Text>
+              <Text style={styles.moreText}>see more →</Text>
             </TouchableOpacity>
           </View>
 
@@ -175,11 +164,12 @@ export default function HomeScreen() {
               ))}
           </ScrollView>
         </View>
+
         <View style={styles.section}>
           <View style={styles.sectionHeader}>
-            <Text style={styles.sectionTitle}>Câmeras instaladas</Text>
+            <Text style={styles.sectionTitle}>Installed cameras</Text>
             <TouchableOpacity onPress={() => console.log("Ver mais câmeras")}>
-              <Text style={styles.moreText}>Mais câmeras →</Text>
+              <Text style={styles.moreText}>see more →</Text>
             </TouchableOpacity>
           </View>
 
@@ -189,7 +179,6 @@ export default function HomeScreen() {
                 key={cam.id}
                 style={styles.cameraItem}
                 onPress={() => console.log(`Ver câmera ${cam.name}`)}>
-                {/* Você usaria o Expo Image aqui */}
                 <View style={styles.cameraImagePlaceholder}>
                   <Text style={styles.cameraText}>{cam.name}</Text>
                 </View>
@@ -197,35 +186,35 @@ export default function HomeScreen() {
             ))}
           </View>
         </View>
+
         <View style={styles.section}>
-          <Text style={styles.sectionTitle}>Serviços</Text>
+          <Text style={styles.servicesSection}>Services</Text>
 
           <View style={serviceStyles.container}>
             <ServiceItem
               icon='paw-outline'
-              title='Cadastrar novos gatos'
+              title='Register a new cat'
               onPress={navigateToRegister}
             />
             <ServiceItem
               icon='stats-chart-outline'
-              title='Visualizar estatísticas'
+              title='View statistics'
               onPress={navigateToStats}
             />
             <ServiceItem
               icon='document-text-outline'
-              title='Visualizar relatórios'
+              title='View reports'
               onPress={navigateToReports}
             />
             <ServiceItem
               icon='wallet-outline'
-              title='Gerenciar assinatura'
+              title='Manage subscription'
               onPress={navigateToSubscription}
             />
           </View>
         </View>
-        <View style={{ height: 50 }} /> {/* Espaço extra no final */}
       </ScrollView>
-    </SafeAreaView>
+    </View>
   );
 }
 
@@ -259,6 +248,13 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
     color: Colors.defaultColors.white100,
   },
+  servicesSection: {
+    fontSize: 20,
+    fontWeight: "bold",
+    color: Colors.defaultColors.white100,
+    paddingLeft: 18,
+    paddingBottom: 8,
+  },
   moreText: {
     fontSize: 14,
     color: Colors.defaultColors.green400,
@@ -268,9 +264,8 @@ const styles = StyleSheet.create({
     paddingHorizontal: 8,
   },
   favoriteCardWrapper: {
-    // O CatCard original é configurado com maxWidth: "50%", então ajustamos o wrapper
-    width: 170,
-    marginRight: 10,
+    width: 180,
+    marginRight: 0,
   },
   // Câmeras
   camerasGrid: {
@@ -303,7 +298,6 @@ const styles = StyleSheet.create({
   },
 });
 
-// --- Estilos dos Serviços ---
 const serviceStyles = StyleSheet.create({
   container: {
     paddingHorizontal: 16,
