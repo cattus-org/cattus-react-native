@@ -1,13 +1,17 @@
 import { CatCard } from "@/components/ui/cats";
 import { AppHeader } from "@/components/ui/headers";
 import { Colors } from "@/constants/theme";
+import { ICamera } from "@/interfaces/api/Cameras"; // Importando sua interface ICamera
 import { ICat } from "@/interfaces/api/Cats";
+import { getCameras } from "@/services/Cameras"; // Importando serviço de câmeras
 import { getCats } from "@/services/Cats";
 import { getUserData } from "@/storage/userDataManager";
 import { Ionicons } from "@expo/vector-icons";
+import { Image } from "expo-image"; // Para renderizar a thumbnail da câmera
 import { Stack, useRouter } from "expo-router";
 import { useEffect, useState } from "react";
 import {
+  Alert,
   ScrollView,
   StyleSheet,
   Text,
@@ -15,45 +19,42 @@ import {
   View,
 } from "react-native";
 
-interface Camera {
-  id: number;
-  name: string;
-  image: string;
-}
+// Mocks e interface local de Câmera removidos.
 
-const MOCK_CAMERAS: Camera[] = [
-  {
-    id: 1,
-    name: "Dormitório 2",
-    image: "https://via.placeholder.com/150/000000?text=Cam+2",
-  },
-  {
-    id: 2,
-    name: "Dormitório 3",
-    image: "https://via.placeholder.com/150/000000?text=Cam+3",
-  },
-  {
-    id: 3,
-    name: "Dormitório 4",
-    image: "https://via.placeholder.com/150/000000?text=Cam+4",
-  },
-  {
-    id: 4,
-    name: "Dormitório 5",
-    image: "https://via.placeholder.com/150/000000?text=Cam+5",
-  },
-  {
-    id: 5,
-    name: "Dormitório 6",
-    image: "https://via.placeholder.com/150/000000?text=Cam+6",
-  },
-  {
-    id: 6,
-    name: "Área de lazer 1",
-    image: "https://via.placeholder.com/150/000000?text=Area+1",
-  },
-];
+// --- Componente de Item da Câmera para a Home ---
+const HomeCameraItem = ({
+  camera,
+  onPress,
+}: {
+  camera: ICamera;
+  onPress: () => void;
+}) => (
+  <TouchableOpacity key={camera.id} style={styles.cameraItem} onPress={onPress}>
+    <View style={styles.cameraImageContainer}>
+      {camera.thumbnail ? (
+        <Image
+          source={{ uri: camera.thumbnail }}
+          style={styles.cameraImage}
+          contentFit='cover'
+        />
+      ) : (
+        <View style={styles.cameraImagePlaceholder}>
+          <Ionicons
+            name='videocam-outline'
+            size={30}
+            color={Colors.defaultColors.gray300}
+          />
+        </View>
+      )}
+    </View>
+    <Text style={styles.cameraText} numberOfLines={1}>
+      {camera.name}
+    </Text>
+    {/* Adicione um indicador de status se a ICamera tiver o campo status */}
+  </TouchableOpacity>
+);
 
+// --- Componente de Item de Serviço ---
 const ServiceItem = ({
   icon,
   title,
@@ -79,12 +80,20 @@ const ServiceItem = ({
   </TouchableOpacity>
 );
 
+// --- Tela Principal ---
 export default function HomeScreen() {
   const router = useRouter();
   const [userName, setUserName] = useState("");
-  const [isLoading, setIsLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
+
+  // Estados dos Gatos
+  const [isLoadingCats, setIsLoadingCats] = useState(true);
+  const [errorCats, setErrorCats] = useState<string | null>(null);
   const [cats, setCats] = useState<ICat[] | null>(null);
+
+  // NOVOS Estados das Câmeras
+  const [cameras, setCameras] = useState<ICamera[] | null>(null);
+  const [isLoadingCameras, setIsLoadingCameras] = useState(true);
+  const [errorCameras, setErrorCameras] = useState<string | null>(null);
 
   const navigateToRegister = () =>
     router.push({ pathname: "/(pages)/cats/cat-register" });
@@ -92,15 +101,16 @@ export default function HomeScreen() {
   const navigateToReports = () => console.log("Visualizar Relatórios");
   const navigateToSubscription = () => console.log("Gerenciar Assinatura");
 
+  // --- Lógica de Fetch ---
+
   const handleGetUserData = async () => {
     const userData = await getUserData();
-    console.log(userData);
     if (userData) setUserName(userData.name);
   };
 
   const fetchCats = async () => {
-    setIsLoading(true);
-    setError(null);
+    setIsLoadingCats(true);
+    setErrorCats(null);
     try {
       const catsList = await getCats();
       if (catsList.data) {
@@ -113,22 +123,102 @@ export default function HomeScreen() {
             nonFavoriteCats.push(cat);
           }
         }
-        setCats([...favoriteCats, ...nonFavoriteCats]);
+        setCats([...favoriteCats]);
       } else {
-        setError("fail to find cats");
+        setCats([]); // Dados vieram, mas vazios
       }
     } catch (err) {
-      setError("fail to find cats");
+      setErrorCats("Não foi possível carregar os gatos.");
       console.log(err);
     } finally {
-      setIsLoading(false);
+      setIsLoadingCats(false);
+    }
+  };
+
+  const fetchCamerasHome = async () => {
+    setIsLoadingCameras(true);
+    setErrorCameras(null);
+    try {
+      const response = await getCameras();
+      if (response.data) {
+        // Exibimos apenas as 6 primeiras câmeras na home
+        setCameras(response.data.slice(0, 6));
+      } else {
+        setCameras([]);
+      }
+    } catch (err) {
+      console.error("Erro ao buscar câmeras para a Home:", err);
+      setErrorCameras("Falha ao carregar câmeras.");
+      setCameras([]);
+    } finally {
+      setIsLoadingCameras(false);
     }
   };
 
   useEffect(() => {
     handleGetUserData();
     fetchCats();
+    fetchCamerasHome(); // Chamando o fetch de câmeras
   }, []);
+
+  // --- Funções Auxiliares de Renderização ---
+
+  const renderCameraContent = () => {
+    if (isLoadingCameras) {
+      return (
+        <View style={styles.loadingPlaceholder}>
+          <Ionicons
+            name='refresh'
+            size={24}
+            color={Colors.defaultColors.gray300}
+          />
+          <Text style={styles.loadingText}>Carregando Câmeras...</Text>
+        </View>
+      );
+    }
+
+    if (errorCameras) {
+      return (
+        <View style={styles.emptyErrorContainer}>
+          <Ionicons
+            name='alert-circle-outline'
+            size={30}
+            color={Colors.defaultColors.danger}
+          />
+          <Text style={styles.errorTextHome}>{errorCameras}</Text>
+        </View>
+      );
+    }
+
+    if (!cameras || cameras.length === 0) {
+      return (
+        <View style={styles.emptyErrorContainer}>
+          <Ionicons
+            name='videocam-off-outline'
+            size={30}
+            color={Colors.defaultColors.gray300}
+          />
+          <Text style={styles.emptyTextHome}>Nenhuma câmera instalada.</Text>
+        </View>
+      );
+    }
+
+    return (
+      <View style={styles.camerasGrid}>
+        {cameras.map((cam) => (
+          <HomeCameraItem
+            key={cam.id}
+            camera={cam}
+            onPress={() => Alert.alert("clicou na cam")}
+            // onPress={() => router.push({ pathname: "/cameras/[id]", params: { id: cam.id.toString() } })}
+          />
+        ))}
+      </View>
+    );
+  };
+
+  // Apenas o loading dos gatos é prioritário para a tela inteira (se necessário)
+  // if (isLoadingCats) return <LoadingScreen />;
 
   return (
     <View style={styles.safeContainer}>
@@ -140,8 +230,7 @@ export default function HomeScreen() {
       />
 
       <ScrollView contentContainerStyle={styles.scrollContent}>
-        <Text style={styles.greetingText}>Welcome, {userName}!</Text>
-
+        <Text style={styles.greetingText}>Welcome, {userName || "User"}!</Text>
         <View style={styles.section}>
           <View style={styles.sectionHeader}>
             <Text style={styles.sectionTitle}>Favorite cats</Text>
@@ -151,42 +240,56 @@ export default function HomeScreen() {
             </TouchableOpacity>
           </View>
 
-          <ScrollView
-            horizontal
-            showsHorizontalScrollIndicator={false}
-            contentContainerStyle={styles.favoritesContainer}>
-            {cats &&
-              cats.length > 0 &&
-              cats.map((cat) => (
-                <View key={cat.id} style={styles.favoriteCardWrapper}>
-                  <CatCard cat={cat} />
+          {isLoadingCats ? (
+            <View style={styles.loadingPlaceholderHorizontal}>
+              <Ionicons
+                name='refresh'
+                size={24}
+                color={Colors.defaultColors.gray300}
+              />
+              <Text style={styles.loadingText}>Carregando Gatos...</Text>
+            </View>
+          ) : (
+            <ScrollView
+              horizontal
+              showsHorizontalScrollIndicator={false}
+              contentContainerStyle={styles.favoritesContainer}>
+              {cats && cats.length > 0 ? (
+                cats.map((cat) => (
+                  <View key={cat.id} style={styles.favoriteCardWrapper}>
+                    <CatCard cat={cat} />
+                  </View>
+                ))
+              ) : (
+                <View style={styles.emptyErrorContainerHorizontal}>
+                  <Ionicons
+                    name='paw-outline'
+                    size={30}
+                    color={Colors.defaultColors.gray300}
+                  />
+                  <Text style={styles.emptyTextHome}>
+                    Nenhum gato encontrado.
+                  </Text>
                 </View>
-              ))}
-          </ScrollView>
+              )}
+            </ScrollView>
+          )}
         </View>
 
+        {/* --- SEÇÃO INSTALLED CAMERAS (Refatorada) --- */}
         <View style={styles.section}>
           <View style={styles.sectionHeader}>
             <Text style={styles.sectionTitle}>Installed cameras</Text>
-            <TouchableOpacity onPress={() => console.log("Ver mais câmeras")}>
+            <TouchableOpacity
+              onPress={() => router.push({ pathname: "/(tabs)/cameras" })}>
               <Text style={styles.moreText}>see more →</Text>
             </TouchableOpacity>
           </View>
 
-          <View style={styles.camerasGrid}>
-            {MOCK_CAMERAS.slice(0, 6).map((cam) => (
-              <TouchableOpacity
-                key={cam.id}
-                style={styles.cameraItem}
-                onPress={() => console.log(`Ver câmera ${cam.name}`)}>
-                <View style={styles.cameraImagePlaceholder}>
-                  <Text style={styles.cameraText}>{cam.name}</Text>
-                </View>
-              </TouchableOpacity>
-            ))}
-          </View>
+          {renderCameraContent()}
         </View>
 
+        {/* --- SEÇÃO SERVICES --- */}
         <View style={styles.section}>
           <Text style={styles.servicesSection}>Services</Text>
 
@@ -277,23 +380,82 @@ const styles = StyleSheet.create({
   },
   cameraItem: {
     width: "48%", // Duas colunas com espaço no meio
-    aspectRatio: 16 / 9,
     borderRadius: 8,
     overflow: "hidden",
     marginBottom: 10,
   },
-  cameraImagePlaceholder: {
-    flex: 1,
+  cameraImageContainer: {
+    width: "100%",
+    aspectRatio: 16 / 9,
     backgroundColor: Colors.defaultColors.black300,
     justifyContent: "center",
     alignItems: "center",
-    opacity: 0.8,
-    padding: 5,
+    borderRadius: 8,
+    overflow: "hidden",
+    marginBottom: 5,
+  },
+  cameraImage: {
+    width: "100%",
+    height: "100%",
+  },
+  cameraImagePlaceholder: {
+    flex: 1,
+    width: "100%",
+    justifyContent: "center",
+    alignItems: "center",
+    backgroundColor: Colors.defaultColors.black300,
   },
   cameraText: {
-    color: "white",
-    fontSize: 12,
-    fontWeight: "bold",
+    color: Colors.defaultColors.white100,
+    fontSize: 14,
+    fontWeight: "400",
+    textAlign: "left",
+  },
+  // Estados de Carregamento/Vazio/Erro
+  loadingPlaceholder: {
+    height: 100,
+    justifyContent: "center",
+    alignItems: "center",
+    backgroundColor: Colors.defaultColors.black300,
+    marginHorizontal: 16,
+    borderRadius: 8,
+    opacity: 0.8,
+  },
+  loadingPlaceholderHorizontal: {
+    height: 180, // Altura aproximada do carrossel
+    justifyContent: "center",
+    alignItems: "center",
+    backgroundColor: Colors.defaultColors.black300,
+    marginHorizontal: 16,
+    borderRadius: 8,
+    opacity: 0.8,
+  },
+  loadingText: {
+    color: Colors.defaultColors.gray100,
+    marginTop: 5,
+    fontSize: 14,
+  },
+  emptyErrorContainer: {
+    justifyContent: "center",
+    alignItems: "center",
+    padding: 20,
+  },
+  emptyErrorContainerHorizontal: {
+    width: "100%",
+    padding: 20,
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  emptyTextHome: {
+    color: Colors.defaultColors.gray100,
+    fontSize: 14,
+    marginTop: 10,
+    textAlign: "center",
+  },
+  errorTextHome: {
+    color: Colors.defaultColors.danger,
+    fontSize: 14,
+    marginTop: 10,
     textAlign: "center",
   },
 });
@@ -305,7 +467,7 @@ const serviceStyles = StyleSheet.create({
   item: {
     flexDirection: "row",
     alignItems: "center",
-    backgroundColor: Colors.defaultColors.purple300, // Use a cor roxa da imagem
+    backgroundColor: Colors.defaultColors.purple300,
     borderRadius: 8,
     paddingVertical: 18,
     paddingHorizontal: 15,

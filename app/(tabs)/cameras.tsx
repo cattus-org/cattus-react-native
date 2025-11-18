@@ -1,87 +1,128 @@
-// app/(tabs)/cameras/index.tsx
-
 import { CameraCard } from "@/components/ui/cameras";
 import { AppHeader } from "@/components/ui/headers"; // Seu componente Header
+import { LoadingScreen } from "@/components/ui/loading"; // Assumindo que você tem este componente
 import { Colors } from "@/constants/theme";
-import { ICamera } from "@/interfaces/api/Cameras";
-import { Stack, useRouter } from "expo-router";
-import { Alert, ScrollView, StyleSheet, View } from "react-native";
+import { ICamera } from "@/interfaces/api/Cameras"; // Sua interface ICamera
+import { getCameras } from "@/services/Cameras";
+import { Ionicons } from "@expo/vector-icons";
+import { Stack, useFocusEffect, useRouter } from "expo-router";
+import { useCallback, useState } from "react";
+import {
+  Alert,
+  ScrollView,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
+} from "react-native";
 
-// --- Dados Mockados ---
-const MOCK_CAMERAS: ICamera[] = [
-  {
-    id: 1,
-    name: "Dormitório Principal",
-    url: "rtsp://...",
-    thumbnail: "https://via.placeholder.com/300/409C6D/FFFFFF?text=Dorm+P",
-    createdAt: new Date(),
-    updatedAt: new Date(),
-    deleted: false,
-    deletedAt: null,
-  },
-  {
-    id: 2,
-    name: "Área de Lazer Interna",
-    url: "rtsp://...",
-    thumbnail: null, // Sem thumbnail, para testar o placeholder
-    createdAt: new Date(),
-    updatedAt: new Date(),
-    deleted: false,
-    deletedAt: null,
-  },
-  {
-    id: 3,
-    name: "Portão de Entrada",
-    url: "rtsp://...",
-    thumbnail: "https://via.placeholder.com/300/2196F3/FFFFFF?text=Portao",
-    createdAt: new Date(),
-    updatedAt: new Date(),
-    deleted: false,
-    deletedAt: null,
-  },
-  {
-    id: 4,
-    name: "Recepção",
-    url: "rtsp://...",
-    thumbnail: "https://via.placeholder.com/300/E91E63/FFFFFF?text=Recep",
-    createdAt: new Date(),
-    updatedAt: new Date(),
-    deleted: false,
-    deletedAt: null,
-  },
-  {
-    id: 5,
-    name: "Quarentena 1",
-    url: "rtsp://...",
-    thumbnail: "https://via.placeholder.com/300/FF5722/FFFFFF?text=Quar+1",
-    createdAt: new Date(),
-    updatedAt: new Date(),
-    deleted: false,
-    deletedAt: null,
-  },
-  {
-    id: 6,
-    name: "Quarentena 2",
-    url: "rtsp://...",
-    thumbnail: "https://via.placeholder.com/300/795548/FFFFFF?text=Quar+2",
-    createdAt: new Date(),
-    updatedAt: new Date(),
-    deleted: false,
-    deletedAt: null,
-  },
-];
+// Mocks removidos.
 
 export default function CamerasScreen() {
   const router = useRouter();
 
+  const [cameras, setCameras] = useState<ICamera[] | null>(null);
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+
+  const fetchCameras = useCallback(async () => {
+    setIsLoading(true);
+    setError(null);
+    try {
+      const response = await getCameras();
+      if (response.data) {
+        // Supondo que a resposta da API seja { data: ICamera[] }
+        setCameras(response.data);
+      } else {
+        // Se a chamada retornar sucesso, mas os dados vierem vazios (ex: response.data === [])
+        setCameras([]);
+      }
+    } catch (err) {
+      console.error("Erro ao buscar câmeras:", err);
+      setError("fail to find cameras, try again later");
+      setCameras([]);
+    } finally {
+      setIsLoading(false);
+    }
+  }, []);
+
+  // Usa useFocusEffect para recarregar sempre que a tela estiver em foco
+  useFocusEffect(
+    useCallback(() => {
+      fetchCameras();
+      // O cleanup aqui pode ser usado se houvesse algum listener de real-time
+      return () => {};
+    }, [fetchCameras])
+  );
+
   const navigateToDetails = (id: number) => {
-    // Navega para a rota de detalhes da câmera: /cameras/[id]
+    // Alerta temporário substituído pela navegação real
     // router.push({
     //   pathname: "/cameras/[id]",
     //   params: { id: id.toString() },
     // });
-    Alert.alert("clicou em detalhes");
+    // Se quiser manter o alerta para debug: Alert.alert("clicou em detalhes");
+
+    Alert.alert("clicou em camera");
   };
+
+  // --- Renderização de Estado ---
+  if (isLoading) {
+    return <LoadingScreen />;
+  }
+
+  // Tratamento de Erro de Fetch
+  if (error) {
+    return (
+      <View style={styles.safeContainer}>
+        <Stack.Screen options={{ headerShown: false }} />
+        <AppHeader
+          title='cameras'
+          onNotificationPress={() => {}}
+          onProfilePress={() => {}}
+        />
+        <View style={styles.emptyContainer}>
+          <Ionicons
+            name='alert-circle-outline'
+            size={40}
+            color={Colors.defaultColors.danger}
+          />
+          <Text style={styles.errorText}>{error}</Text>
+          <TouchableOpacity style={styles.retryButton} onPress={fetchCameras}>
+            <Text style={styles.retryButtonText}>Tentar Novamente</Text>
+          </TouchableOpacity>
+        </View>
+      </View>
+    );
+  }
+
+  // Tratamento de Lista Vazia
+  if (!cameras || cameras.length === 0) {
+    return (
+      <View style={styles.safeContainer}>
+        <Stack.Screen options={{ headerShown: false }} />
+        <AppHeader
+          title='Câmeras'
+          onNotificationPress={() => {}}
+          onProfilePress={() => {}}
+        />
+        <View style={styles.emptyContainer}>
+          <Ionicons
+            name='videocam-off-outline'
+            size={60}
+            color={Colors.defaultColors.gray300}
+          />
+          <Text style={styles.emptyText}>
+            Nenhuma câmera cadastrada ou encontrada.
+          </Text>
+          <TouchableOpacity style={styles.retryButton} onPress={fetchCameras}>
+            <Text style={styles.retryButtonText}>Recarregar</Text>
+          </TouchableOpacity>
+        </View>
+      </View>
+    );
+  }
+  // ------------------------------
 
   return (
     <View style={styles.safeContainer}>
@@ -95,10 +136,12 @@ export default function CamerasScreen() {
 
       <ScrollView contentContainerStyle={styles.scrollContent}>
         <View style={styles.contentGrid}>
-          {MOCK_CAMERAS.map((cam) => (
+          {cameras.map((cam) => (
             <CameraCard
               key={cam.id}
               camera={cam}
+              // Você precisará adicionar as props 'status' e 'location' ao ICamera, ou adaptá-las
+              // Aqui estamos apenas passando o objeto cam completo
               onPress={() => navigateToDetails(cam.id)}
             />
           ))}
@@ -124,5 +167,36 @@ const styles = StyleSheet.create({
     flexWrap: "wrap",
     justifyContent: "space-between",
     gap: 16,
+  },
+  // Estilos para estados de Vazio/Erro
+  emptyContainer: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+    padding: 20,
+    backgroundColor: Colors.defaultColors.background,
+  },
+  emptyText: {
+    color: Colors.defaultColors.gray100,
+    fontSize: 16,
+    marginTop: 15,
+    textAlign: "center",
+  },
+  errorText: {
+    color: Colors.defaultColors.danger,
+    fontSize: 16,
+    marginTop: 15,
+    textAlign: "center",
+  },
+  retryButton: {
+    marginTop: 20,
+    paddingVertical: 10,
+    paddingHorizontal: 20,
+    backgroundColor: Colors.defaultColors.green300,
+    borderRadius: 8,
+  },
+  retryButtonText: {
+    color: Colors.defaultColors.black300,
+    fontWeight: "bold",
   },
 });
