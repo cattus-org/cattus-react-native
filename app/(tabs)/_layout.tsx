@@ -88,6 +88,15 @@ export default function TabLayout() {
           ),
         }}
       />
+      <Tabs.Screen
+        name='cameras'
+        options={{
+          title: "Cameras",
+          tabBarIcon: ({ color }) => (
+            <FontAwesome name='video-camera' color={color} size={24} />
+          ),
+        }}
+      />
     </Tabs>
   );
 }
