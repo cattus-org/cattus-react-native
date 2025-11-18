@@ -61,17 +61,17 @@ export default function CatsList() {
     {
       iconName: "search-outline" as const,
       onPress: handleCatRegister,
-      color: Colors.defaultColors.gray100, // Cinza
+      color: Colors.defaultColors.gray100,
     },
     {
       iconName: "options-outline" as const,
       onPress: () => {},
-      color: Colors.defaultColors.alert, // Vermelho/Alerta
+      color: Colors.defaultColors.alert,
     },
     {
-      iconName: "paw-outline" as const, // Ícone de adicionar para gatos
+      iconName: "paw-outline" as const,
       onPress: () => {},
-      color: Colors.defaultColors.green400, // Verde
+      color: Colors.defaultColors.green400,
     },
   ].reverse();
 
@@ -85,11 +85,11 @@ export default function CatsList() {
   //TODO - adicionar safeareaview em todas as telas
   return (
     <View style={styles.container}>
-      <Stack.Screen options={{ title: "Gatos", headerShown: false }} />
+      <Stack.Screen options={{ title: "Cats", headerShown: false }} />
       <AppHeader
         onNotificationPress={handleNotification}
         onProfilePress={handleProfile}
-        title='Gatos'
+        title='Cats'
       />
       {isLoading ? (
         <LoadingScreen />

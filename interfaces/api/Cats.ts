@@ -6,7 +6,7 @@ export interface ICat {
   name: string;
   birthDate: Date;
   picture: string;
-  sex: "macho" | "femea";
+  sex: "macho" | "fêmea";
   observations?: string;
   vaccines?: string[];
   commorbidities?: string[];

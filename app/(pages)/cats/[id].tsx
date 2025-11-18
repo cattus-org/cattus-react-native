@@ -2,6 +2,7 @@ import { LoadingScreen } from "@/components/ui/loading";
 import { Colors } from "@/constants/theme";
 import { ICat } from "@/interfaces/api/Cats";
 import { getCatById } from "@/services/Cats";
+import { calculateAge, formatValue } from "@/utils/utils";
 import { Ionicons } from "@expo/vector-icons";
 import { Image } from "expo-image";
 import {
@@ -55,6 +56,11 @@ export default function CatDetailsScreen() {
     );
   }
 
+  const catAge = calculateAge(cat.birthDate);
+  const catWeight = cat.weight ? `${cat.weight} kg` : "Não informado";
+  const catVaccines = formatValue(cat.vaccines);
+  const catCommorbidities = formatValue(cat.commorbidities);
+
   return (
     <View style={styles.container}>
       <Stack.Screen
@@ -87,33 +93,69 @@ export default function CatDetailsScreen() {
 
         <View style={styles.infoBox}>
           <Text style={styles.nameDetail}>{cat.name}</Text>
-          {/* <View style={styles.detailRow}>
-            <Ionicons
-              name='paw'
-              size={16}
-              color={Colors.defaultColors.gray100}
-            />
-            <Text style={styles.detailText}>Raça: {cat.breed}</Text>
-          </View>
           <View style={styles.detailRow}>
             <Ionicons
               name='time-outline'
               size={16}
               color={Colors.defaultColors.gray100}
             />
-            <Text style={styles.detailText}>Idade: {cat.birthDate}</Text>
-          </View> */}
+            <Text style={styles.detailText}>Age: {catAge}</Text>
+          </View>
+
           <View style={styles.detailRow}>
             <Ionicons
               name='body-outline'
               size={16}
               color={Colors.defaultColors.gray100}
             />
-            <Text style={styles.detailText}>Sexo: {cat.sex}</Text>
+            <Text style={styles.detailText}>Sex: {formatValue(cat.sex)}</Text>
+          </View>
+          <View style={styles.detailRow}>
+            <Ionicons
+              name='scale-outline'
+              size={16}
+              color={Colors.defaultColors.gray100}
+            />
+            <Text style={styles.detailText}>Weight: {catWeight}</Text>
           </View>
 
-          <Text style={styles.sectionTitle}>Sobre o {cat.name}</Text>
-          <Text style={styles.descriptionText}>{cat.observations}</Text>
+          <View style={styles.detailRow}>
+            <Ionicons
+              name='ribbon-outline'
+              size={16}
+              color={Colors.defaultColors.gray100}
+            />
+            <Text style={styles.detailText}>
+              Status: {formatValue(cat.status)}
+            </Text>
+          </View>
+          <Text style={styles.sectionTitle}>Health and Care</Text>
+          <View style={styles.detailRow}>
+            <Ionicons
+              name='bandage-outline'
+              size={16}
+              color={Colors.defaultColors.gray100}
+            />
+            <Text style={styles.detailText}>Vaccines: {catVaccines}</Text>
+          </View>
+          <View style={styles.detailRow}>
+            <Ionicons
+              name='medkit-outline'
+              size={16}
+              color={Colors.defaultColors.gray100}
+            />
+            <Text style={styles.detailText}>
+              Commorbidities: {catCommorbidities}
+            </Text>
+          </View>
+          <Text style={styles.sectionTitle}>About {cat.name}</Text>
+          <Text style={styles.descriptionText}>
+            {formatValue(cat.observations)}
+          </Text>
+          <Text style={styles.auditText}>
+            Registered in:{" "}
+            {formatValue(cat.createdAt ? new Date(cat.createdAt) : undefined)}
+          </Text>
         </View>
       </ScrollView>
     </View>
@@ -167,5 +209,11 @@ const styles = StyleSheet.create({
     fontSize: 16,
     color: Colors.defaultColors.gray200,
     lineHeight: 24,
+  },
+  auditText: {
+    fontSize: 12,
+    color: Colors.defaultColors.gray300,
+    marginTop: 20,
+    textAlign: "right",
   },
 });
