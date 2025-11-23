@@ -5,9 +5,10 @@ import { LoadingScreen } from "@/components/ui/loading";
 import { Colors } from "@/constants/theme";
 import { ICat } from "@/interfaces/api/Cats";
 import { getCats } from "@/services/Cats";
+import { useFocusEffect } from "@react-navigation/native";
 import { Stack, useRouter } from "expo-router";
-import { useEffect, useRef, useState } from "react";
-import { Alert, FlatList, StyleSheet, View } from "react-native";
+import { useCallback, useRef, useState } from "react";
+import { Alert, FlatList, StyleSheet, Text, View } from "react-native";
 
 export default function CatsList() {
   const [cats, setCats] = useState<ICat[]>([]);
@@ -17,7 +18,7 @@ export default function CatsList() {
   const router = useRouter();
   const flatListRef = useRef(null);
 
-  const fetchCats = async () => {
+  const fetchCats = useCallback(async () => {
     setIsLoading(true);
     setError(null);
     try {
@@ -34,22 +35,28 @@ export default function CatsList() {
         }
         setCats([...favoriteCats, ...nonFavoriteCats]);
       } else {
-        setError("fail to find cats");
+        setError("Falha ao carregar a lista de gatos. Tente novamente.");
       }
     } catch (err) {
-      setError("fail to find cats");
-      console.log(err);
+      setError("Erro de conexão. Não foi possível buscar os gatos.");
     } finally {
       setIsLoading(false);
     }
-  };
+  }, []);
+
+  useFocusEffect(
+    useCallback(() => {
+      fetchCats();
+      return () => {};
+    }, [fetchCats])
+  );
 
   const handleNotification = () => {
-    Alert.alert("clicou em notificações");
+    Alert.alert("Notificações", "Você clicou em notificações");
   };
 
   const handleProfile = () => {
-    Alert.alert("clicou em perfil");
+    Alert.alert("Perfil", "Você clicou em perfil");
   };
 
   const handleCatRegister = () => {
@@ -64,11 +71,49 @@ export default function CatsList() {
     },
   ].reverse();
 
-  useEffect(() => {
-    fetchCats();
-  }, []);
-
   const renderCat = ({ item }: { item: ICat }) => <CatCard cat={item} />;
+
+  const renderContent = () => {
+    if (isLoading) {
+      return <LoadingScreen />;
+    }
+
+    if (error) {
+      return (
+        <View style={styles.centerContainer}>
+          <Text style={styles.errorText}>{error}</Text>
+          <Text style={styles.emptySubtitle}>
+            Verifique sua conexão ou tente recarregar.
+          </Text>
+        </View>
+      );
+    }
+
+    if (cats.length === 0) {
+      return (
+        <View style={styles.centerContainer}>
+          <Text style={styles.emptyTitle}>Nenhum gato cadastrado</Text>
+          <Text style={styles.emptySubtitle}>
+            Parece que você ainda não adicionou nenhum gatinho. Use o botão +
+            abaixo para começar!
+          </Text>
+        </View>
+      );
+    }
+
+    return (
+      <FlatList
+        ref={flatListRef}
+        data={cats}
+        renderItem={renderCat}
+        keyExtractor={(item) => item.id.toString()}
+        numColumns={2}
+        contentContainerStyle={styles.listContent}
+        refreshing={isLoading}
+        onRefresh={fetchCats}
+      />
+    );
+  };
 
   return (
     <View style={styles.container}>
@@ -78,20 +123,7 @@ export default function CatsList() {
         onProfilePress={handleProfile}
         title='Cats'
       />
-      {isLoading ? (
-        <LoadingScreen />
-      ) : (
-        <FlatList
-          ref={flatListRef}
-          data={cats}
-          renderItem={renderCat}
-          keyExtractor={(item) => item.id.toString()}
-          numColumns={2}
-          contentContainerStyle={styles.listContent}
-          refreshing={isLoading}
-          onRefresh={fetchCats}
-        />
-      )}
+      {renderContent()}
       <ExpandableFab options={fabOptions} />
     </View>
   );
@@ -102,17 +134,32 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: Colors.defaultColors.background,
   },
-  header: {
-    padding: 16,
+  centerContainer: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+    padding: 20,
+    backgroundColor: Colors.defaultColors.background,
   },
-  screenTitle: {
-    fontSize: 24,
+  emptyTitle: {
+    fontSize: 22,
     fontWeight: "bold",
+    marginBottom: 8,
+    color: Colors.defaultColors.gray300,
+    textAlign: "center",
   },
-  resultsText: {
-    fontSize: 14,
-    color: "#666",
-    marginVertical: 10,
+  emptySubtitle: {
+    fontSize: 16,
+    color: Colors.defaultColors.gray200,
+    textAlign: "center",
+    lineHeight: 24,
+  },
+  errorText: {
+    fontSize: 18,
+    fontWeight: "600",
+    marginBottom: 8,
+    color: Colors.defaultColors.danger,
+    textAlign: "center",
   },
   listContent: {
     paddingHorizontal: 8,
