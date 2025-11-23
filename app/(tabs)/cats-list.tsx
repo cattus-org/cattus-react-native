@@ -59,20 +59,20 @@ export default function CatsList() {
 
   const fabOptions = [
     {
-      iconName: "search-outline" as const,
+      iconName: "paw-outline" as const,
       onPress: handleCatRegister,
       color: Colors.defaultColors.gray100,
     },
-    {
-      iconName: "options-outline" as const,
-      onPress: () => {},
-      color: Colors.defaultColors.alert,
-    },
-    {
-      iconName: "paw-outline" as const,
-      onPress: () => {},
-      color: Colors.defaultColors.green400,
-    },
+    // {
+    //   iconName: "options-outline" as const,
+    //   onPress: () => handleCatRegister,
+    //   color: Colors.defaultColors.alert,
+    // },
+    // {
+    //   iconName: "paw-outline" as const,
+    //   onPress: () => handleCatRegister,
+    //   color: Colors.defaultColors.green400,
+    // },
   ].reverse();
 
   useEffect(() => {

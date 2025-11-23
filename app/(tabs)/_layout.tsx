@@ -1,5 +1,4 @@
 import { HapticTab } from "@/components/haptic-tab";
-import { IconSymbol } from "@/components/ui/icon-symbol";
 import { LoadingScreen } from "@/components/ui/loading";
 import { Colors } from "@/constants/theme";
 import { getToken } from "@/storage/tokenManager";
@@ -76,15 +75,6 @@ export default function TabLayout() {
           title: "Cats",
           tabBarIcon: ({ color }) => (
             <FontAwesome name='paw' color={color} size={24} />
-          ),
-        }}
-      />
-      <Tabs.Screen
-        name='explore'
-        options={{
-          title: "Explore",
-          tabBarIcon: ({ color }) => (
-            <IconSymbol size={28} name='paperplane.fill' color={color} />
           ),
         }}
       />

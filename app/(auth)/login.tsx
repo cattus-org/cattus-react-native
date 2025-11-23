@@ -6,7 +6,7 @@ import { saveToken } from "@/storage/tokenManager";
 import { saveUserData } from "@/storage/userDataManager";
 import { messageTransformer } from "@/utils/utils";
 import { Image } from "expo-image";
-import { Link, Stack, useRouter } from "expo-router";
+import { Stack, useRouter } from "expo-router";
 import { useState } from "react";
 import { Alert, StyleSheet, View } from "react-native";
 
@@ -59,7 +59,7 @@ export default function LoginScreen() {
       />
 
       <DefaultTextInput
-        placeholder='Email'
+        placeholder='email'
         keyboardType='email-address'
         autoCapitalize='none'
         onChangeText={(email) => setEmail(email)}
@@ -67,22 +67,22 @@ export default function LoginScreen() {
       />
 
       <DefaultTextInput
-        placeholder='Senha'
+        placeholder='password'
         onChangeText={(password) => setPassword(password)}
         value={password}
         secureTextEntry={true}
       />
 
       <DefaultButton
-        text='Entrar'
+        text='sign in'
         onPress={() => handleLogin()}
         isLoading={isLoading}
         disabled={isLoading}
       />
 
-      <Link href='/register' style={styles.link}>
+      {/* <Link href='/register' style={styles.link}>
         Ainda não tem uma conta? Crie uma aqui.
-      </Link>
+      </Link> */}
     </View>
   );
 }

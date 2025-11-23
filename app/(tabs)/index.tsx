@@ -50,7 +50,6 @@ const HomeCameraItem = ({
     <Text style={styles.cameraText} numberOfLines={1}>
       {camera.name}
     </Text>
-    {/* Adicione um indicador de status se a ICamera tiver o campo status */}
   </TouchableOpacity>
 );
 
@@ -85,7 +84,6 @@ export default function HomeScreen() {
   const router = useRouter();
   const [userName, setUserName] = useState("");
 
-  // Estados dos Gatos
   const [isLoadingCats, setIsLoadingCats] = useState(true);
   const [errorCats, setErrorCats] = useState<string | null>(null);
   const [cats, setCats] = useState<ICat[] | null>(null);
@@ -100,8 +98,6 @@ export default function HomeScreen() {
   const navigateToStats = () => console.log("Visualizar Estatísticas");
   const navigateToReports = () => console.log("Visualizar Relatórios");
   const navigateToSubscription = () => console.log("Gerenciar Assinatura");
-
-  // --- Lógica de Fetch ---
 
   const handleGetUserData = async () => {
     const userData = await getUserData();

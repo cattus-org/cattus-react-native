@@ -23,7 +23,6 @@ export default function AddOptionsScreen() {
         title='Register a Cat'
         onNotificationPress={() => {}}
         onProfilePress={() => {}}
-        notificationCount={4}
       />
 
       <View style={styles.contentContainer}>
@@ -35,17 +34,12 @@ export default function AddOptionsScreen() {
           />
         </View>
 
-        <Text style={styles.mainTitle}>O que deseja fazer?</Text>
+        <Text style={styles.mainTitle}>Register a cat</Text>
 
         <Text style={styles.description}>
-          O cadastro de gatos possui 5 etapas. As duas primeiras são
-          **OBRIGATÓRIAS** e inserem o gato no sistema, enquanto as últimas três
-          são opcionais.
-        </Text>
-
-        <Text style={styles.instruction}>
-          **Cadastrar gato** inicia um novo cadastro. **Concluir cadastro**
-          retoma o registro de um gato já cadastrado.
+          The cat registration process has 5 steps. The first two are
+          **MANDATORY** and add the cat to the system, while the last three are
+          optional.
         </Text>
 
         <View style={styles.spacer} />
@@ -53,7 +47,7 @@ export default function AddOptionsScreen() {
           style={[styles.button, styles.primaryButton]}
           onPress={handleStartNewRegistration}
           activeOpacity={0.8}>
-          <Text style={styles.primaryButtonText}>Cadastrar gato</Text>
+          <Text style={styles.primaryButtonText}>Register cat</Text>
           <Ionicons
             name='paw'
             size={20}
@@ -66,7 +60,7 @@ export default function AddOptionsScreen() {
           style={styles.button}
           onPress={handleGoBack}
           activeOpacity={0.7}>
-          <Text style={styles.secondaryButtonText}>Voltar</Text>
+          <Text style={styles.secondaryButtonText}>Back</Text>
         </TouchableOpacity>
       </View>
     </View>

@@ -7,15 +7,14 @@ import { Ionicons } from "@expo/vector-icons";
 import { Stack, useRouter } from "expo-router";
 import { useEffect, useState } from "react";
 import {
-  SafeAreaView,
   ScrollView,
   StyleSheet,
   Text,
   TouchableOpacity,
   View,
 } from "react-native";
+import { SafeAreaView } from "react-native-safe-area-context";
 
-// Detail Row Component
 const DetailRow = ({ label, value }: { label: string; value: string }) => (
   <View style={styles.detailRow}>
     <Text style={styles.detailLabel}>{label}</Text>
@@ -23,7 +22,6 @@ const DetailRow = ({ label, value }: { label: string; value: string }) => (
   </View>
 );
 
-// --- Custom Logout Confirmation Component (replaces Alert) ---
 interface LogoutConfirmationProps {
   onConfirm: () => void;
   onCancel: () => void;
@@ -104,7 +102,6 @@ export default function ProfileScreen() {
     return <LoadingScreen />;
   }
 
-  // --- Error Render with Back Button ---
   if (error) {
     return (
       <SafeAreaView style={styles.safeContainer}>
@@ -115,7 +112,6 @@ export default function ProfileScreen() {
             headerTintColor: Colors.defaultColors.white100,
             headerTitleStyle: { fontWeight: "bold" },
             headerShadowVisible: false,
-            // Header back button is removed as per user request
           }}
         />
         <ScrollView contentContainerStyle={styles.scrollContent}>
@@ -148,7 +144,6 @@ export default function ProfileScreen() {
     );
   }
 
-  // --- Main Render with Custom Back Button ---
   return (
     <SafeAreaView style={styles.safeContainer}>
       <Stack.Screen
@@ -158,7 +153,6 @@ export default function ProfileScreen() {
           headerTintColor: Colors.defaultColors.white100,
           headerTitleStyle: { fontWeight: "bold" },
           headerShadowVisible: false,
-          // Header back button removed as per user request
         }}
       />
 
@@ -227,24 +221,21 @@ const styles = StyleSheet.create({
   },
   scrollContent: {
     paddingHorizontal: 16,
-    // Vertical Centering logic
     flexGrow: 1,
     justifyContent: "center",
     paddingVertical: 20,
   },
-  // New style for the custom back button
   customBackButton: {
     position: "absolute",
-    top: 40, // Adjust position as needed relative to SafeAreaView/ScrollView top
+    top: 10,
     left: 16,
     padding: 5,
     zIndex: 10,
   },
-  // User Info Block (Pushed down by the custom button, but centered relative to the remaining space)
   headerBlock: {
     alignItems: "center",
     marginBottom: 30,
-    marginTop: 20, // Added small margin top to ensure space for the back button
+    marginTop: 20,
   },
   userName: {
     fontSize: 24,
@@ -257,8 +248,6 @@ const styles = StyleSheet.create({
     color: Colors.defaultColors.gray200,
     textAlign: "center",
   },
-
-  // Details Card
   card: {
     backgroundColor: Colors.defaultColors.black300,
     borderRadius: 12,
@@ -294,8 +283,6 @@ const styles = StyleSheet.create({
     flexShrink: 1,
     textAlign: "right",
   },
-
-  // Logout
   logoutButton: {
     flexDirection: "row",
     alignItems: "center",
@@ -312,8 +299,6 @@ const styles = StyleSheet.create({
     fontSize: 16,
     flex: 1,
   },
-
-  // Error State Styling
   errorContainer: {
     flex: 1,
     justifyContent: "center",
@@ -340,7 +325,6 @@ const styles = StyleSheet.create({
   },
 });
 
-// --- Styles for Overlay/Modal Confirmation ---
 const overlayStyles = StyleSheet.create({
   overlay: {
     ...StyleSheet.absoluteFillObject,

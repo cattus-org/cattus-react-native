@@ -9,7 +9,7 @@ export async function getUserData() {
   const userDataString = await AsyncStorage.getItem("userData");
   if (!userDataString) return null;
   const jsonParsed = await JSON.parse(userDataString!);
-  const userData: IUser = jsonParsed.user;
+  const userData: IUser = jsonParsed;
   return userData;
 }
 
