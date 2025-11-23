@@ -44,7 +44,6 @@ export default function CatsList() {
     }
   };
 
-  // jogar as funções disso num arquivo separado pra importar e usar?
   const handleNotification = () => {
     Alert.alert("clicou em notificações");
   };
@@ -63,16 +62,6 @@ export default function CatsList() {
       onPress: handleCatRegister,
       color: Colors.defaultColors.gray100,
     },
-    // {
-    //   iconName: "options-outline" as const,
-    //   onPress: () => handleCatRegister,
-    //   color: Colors.defaultColors.alert,
-    // },
-    // {
-    //   iconName: "paw-outline" as const,
-    //   onPress: () => handleCatRegister,
-    //   color: Colors.defaultColors.green400,
-    // },
   ].reverse();
 
   useEffect(() => {
@@ -81,8 +70,6 @@ export default function CatsList() {
 
   const renderCat = ({ item }: { item: ICat }) => <CatCard cat={item} />;
 
-  //se não tiver gato, retornar um "nenhum gato encontrado"
-  //TODO - adicionar safeareaview em todas as telas
   return (
     <View style={styles.container}>
       <Stack.Screen options={{ title: "Cats", headerShown: false }} />

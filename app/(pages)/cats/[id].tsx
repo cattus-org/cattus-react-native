@@ -4,13 +4,9 @@ import { ICat } from "@/interfaces/api/Cats";
 import { getCatById } from "@/services/Cats";
 import { calculateAge, formatValue } from "@/utils/utils";
 import { Ionicons } from "@expo/vector-icons";
+import { useFocusEffect } from "@react-navigation/native";
 import { Image } from "expo-image";
-import {
-  Stack,
-  useFocusEffect,
-  useLocalSearchParams,
-  useRouter,
-} from "expo-router";
+import { Stack, useLocalSearchParams, useRouter } from "expo-router";
 import { useState } from "react";
 import {
   ScrollView,
@@ -73,7 +69,7 @@ export default function CatDetailsScreen() {
           headerTintColor: Colors.defaultColors.green300,
           headerLeft: () => (
             <TouchableOpacity
-              onPress={() => router.back()} // Ação Voltar
+              onPress={() => router.back()}
               style={{ marginLeft: 10 }}>
               <Ionicons
                 name='arrow-back'

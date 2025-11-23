@@ -1,11 +1,12 @@
 import { CameraCard } from "@/components/ui/cameras";
-import { AppHeader } from "@/components/ui/headers"; // Seu componente Header
-import { LoadingScreen } from "@/components/ui/loading"; // Assumindo que você tem este componente
+import { AppHeader } from "@/components/ui/headers";
+import { LoadingScreen } from "@/components/ui/loading";
 import { Colors } from "@/constants/theme";
-import { ICamera } from "@/interfaces/api/Cameras"; // Sua interface ICamera
+import { ICamera } from "@/interfaces/api/Cameras";
 import { getCameras } from "@/services/Cameras";
 import { Ionicons } from "@expo/vector-icons";
-import { Stack, useFocusEffect, useRouter } from "expo-router";
+import { useFocusEffect } from "@react-navigation/native";
+import { Stack, useRouter } from "expo-router";
 import { useCallback, useState } from "react";
 import {
   Alert,
@@ -15,8 +16,6 @@ import {
   TouchableOpacity,
   View,
 } from "react-native";
-
-// Mocks removidos.
 
 export default function CamerasScreen() {
   const router = useRouter();
@@ -31,10 +30,8 @@ export default function CamerasScreen() {
     try {
       const response = await getCameras();
       if (response.data) {
-        // Supondo que a resposta da API seja { data: ICamera[] }
         setCameras(response.data);
       } else {
-        // Se a chamada retornar sucesso, mas os dados vierem vazios (ex: response.data === [])
         setCameras([]);
       }
     } catch (err) {
@@ -46,32 +43,21 @@ export default function CamerasScreen() {
     }
   }, []);
 
-  // Usa useFocusEffect para recarregar sempre que a tela estiver em foco
   useFocusEffect(
     useCallback(() => {
       fetchCameras();
-      // O cleanup aqui pode ser usado se houvesse algum listener de real-time
       return () => {};
     }, [fetchCameras])
   );
 
   const navigateToDetails = (id: number) => {
-    // Alerta temporário substituído pela navegação real
-    // router.push({
-    //   pathname: "/cameras/[id]",
-    //   params: { id: id.toString() },
-    // });
-    // Se quiser manter o alerta para debug: Alert.alert("clicou em detalhes");
-
     Alert.alert("clicou em camera");
   };
 
-  // --- Renderização de Estado ---
   if (isLoading) {
     return <LoadingScreen />;
   }
 
-  // Tratamento de Erro de Fetch
   if (error) {
     return (
       <View style={styles.safeContainer}>
@@ -96,7 +82,6 @@ export default function CamerasScreen() {
     );
   }
 
-  // Tratamento de Lista Vazia
   if (!cameras || cameras.length === 0) {
     return (
       <View style={styles.safeContainer}>
@@ -122,7 +107,6 @@ export default function CamerasScreen() {
       </View>
     );
   }
-  // ------------------------------
 
   return (
     <View style={styles.safeContainer}>
@@ -140,8 +124,6 @@ export default function CamerasScreen() {
             <CameraCard
               key={cam.id}
               camera={cam}
-              // Você precisará adicionar as props 'status' e 'location' ao ICamera, ou adaptá-las
-              // Aqui estamos apenas passando o objeto cam completo
               onPress={() => navigateToDetails(cam.id)}
             />
           ))}
@@ -168,7 +150,6 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
     gap: 16,
   },
-  // Estilos para estados de Vazio/Erro
   emptyContainer: {
     flex: 1,
     justifyContent: "center",

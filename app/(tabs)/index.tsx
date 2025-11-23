@@ -1,17 +1,19 @@
 import { CatCard } from "@/components/ui/cats";
 import { AppHeader } from "@/components/ui/headers";
 import { Colors } from "@/constants/theme";
-import { ICamera } from "@/interfaces/api/Cameras"; // Importando sua interface ICamera
+import { ICamera } from "@/interfaces/api/Cameras";
 import { ICat } from "@/interfaces/api/Cats";
-import { getCameras } from "@/services/Cameras"; // Importando serviço de câmeras
+import { getCameras } from "@/services/Cameras";
 import { getCats } from "@/services/Cats";
 import { getUserData } from "@/storage/userDataManager";
 import { Ionicons } from "@expo/vector-icons";
-import { Image } from "expo-image"; // Para renderizar a thumbnail da câmera
+import { useFocusEffect } from "@react-navigation/native";
+import { Image } from "expo-image";
 import { Stack, useRouter } from "expo-router";
-import { useEffect, useState } from "react";
+import { useCallback, useState } from "react";
 import {
   Alert,
+  RefreshControl,
   ScrollView,
   StyleSheet,
   Text,
@@ -19,9 +21,6 @@ import {
   View,
 } from "react-native";
 
-// Mocks e interface local de Câmera removidos.
-
-// --- Componente de Item da Câmera para a Home ---
 const HomeCameraItem = ({
   camera,
   onPress,
@@ -53,7 +52,6 @@ const HomeCameraItem = ({
   </TouchableOpacity>
 );
 
-// --- Componente de Item de Serviço ---
 const ServiceItem = ({
   icon,
   title,
@@ -79,16 +77,15 @@ const ServiceItem = ({
   </TouchableOpacity>
 );
 
-// --- Tela Principal ---
 export default function HomeScreen() {
   const router = useRouter();
   const [userName, setUserName] = useState("");
+  const [isRefreshing, setIsRefreshing] = useState(false);
 
   const [isLoadingCats, setIsLoadingCats] = useState(true);
   const [errorCats, setErrorCats] = useState<string | null>(null);
   const [cats, setCats] = useState<ICat[] | null>(null);
 
-  // NOVOS Estados das Câmeras
   const [cameras, setCameras] = useState<ICamera[] | null>(null);
   const [isLoadingCameras, setIsLoadingCameras] = useState(true);
   const [errorCameras, setErrorCameras] = useState<string | null>(null);
@@ -121,7 +118,7 @@ export default function HomeScreen() {
         }
         setCats([...favoriteCats]);
       } else {
-        setCats([]); // Dados vieram, mas vazios
+        setCats([]);
       }
     } catch (err) {
       setErrorCats("Não foi possível carregar os gatos.");
@@ -129,6 +126,8 @@ export default function HomeScreen() {
     } finally {
       setIsLoadingCats(false);
     }
+
+    return true;
   };
 
   const fetchCamerasHome = async () => {
@@ -137,7 +136,6 @@ export default function HomeScreen() {
     try {
       const response = await getCameras();
       if (response.data) {
-        // Exibimos apenas as 6 primeiras câmeras na home
         setCameras(response.data.slice(0, 6));
       } else {
         setCameras([]);
@@ -149,15 +147,28 @@ export default function HomeScreen() {
     } finally {
       setIsLoadingCameras(false);
     }
+
+    return true;
   };
 
-  useEffect(() => {
-    handleGetUserData();
-    fetchCats();
-    fetchCamerasHome(); // Chamando o fetch de câmeras
-  }, []);
+  const handleRefresh = async () => {
+    if (isRefreshing) return;
+    setIsRefreshing(true);
 
-  // --- Funções Auxiliares de Renderização ---
+    try {
+      await Promise.all([handleGetUserData(), fetchCats(), fetchCamerasHome()]);
+    } catch (e) {
+      console.error("Erro durante o refresh:", e);
+    } finally {
+      setIsRefreshing(false);
+    }
+  };
+
+  useFocusEffect(
+    useCallback(() => {
+      handleRefresh();
+    }, [])
+  );
 
   const renderCameraContent = () => {
     if (isLoadingCameras) {
@@ -206,15 +217,11 @@ export default function HomeScreen() {
             key={cam.id}
             camera={cam}
             onPress={() => Alert.alert("clicou na cam")}
-            // onPress={() => router.push({ pathname: "/cameras/[id]", params: { id: cam.id.toString() } })}
           />
         ))}
       </View>
     );
   };
-
-  // Apenas o loading dos gatos é prioritário para a tela inteira (se necessário)
-  // if (isLoadingCats) return <LoadingScreen />;
 
   return (
     <View style={styles.safeContainer}>
@@ -224,8 +231,16 @@ export default function HomeScreen() {
         onNotificationPress={() => {}}
         onProfilePress={() => {}}
       />
-
-      <ScrollView contentContainerStyle={styles.scrollContent}>
+      <ScrollView
+        contentContainerStyle={styles.scrollContent}
+        refreshControl={
+          <RefreshControl
+            refreshing={isRefreshing}
+            onRefresh={handleRefresh}
+            tintColor={Colors.defaultColors.green400}
+            colors={[Colors.defaultColors.green400]}
+          />
+        }>
         <Text style={styles.greetingText}>Welcome, {userName || "User"}!</Text>
         <View style={styles.section}>
           <View style={styles.sectionHeader}>
@@ -272,7 +287,6 @@ export default function HomeScreen() {
           )}
         </View>
 
-        {/* --- SEÇÃO INSTALLED CAMERAS (Refatorada) --- */}
         <View style={styles.section}>
           <View style={styles.sectionHeader}>
             <Text style={styles.sectionTitle}>Installed cameras</Text>
@@ -284,8 +298,6 @@ export default function HomeScreen() {
 
           {renderCameraContent()}
         </View>
-
-        {/* --- SEÇÃO SERVICES --- */}
         <View style={styles.section}>
           <Text style={styles.servicesSection}>Services</Text>
 
@@ -358,7 +370,6 @@ const styles = StyleSheet.create({
     fontSize: 14,
     color: Colors.defaultColors.green400,
   },
-  // Gatos Favoritos
   favoritesContainer: {
     paddingHorizontal: 8,
   },
@@ -366,16 +377,15 @@ const styles = StyleSheet.create({
     width: 180,
     marginRight: 0,
   },
-  // Câmeras
   camerasGrid: {
     flexDirection: "row",
     flexWrap: "wrap",
     justifyContent: "space-between",
     paddingHorizontal: 16,
-    gap: 10, // Espaçamento entre os itens
+    gap: 10,
   },
   cameraItem: {
-    width: "48%", // Duas colunas com espaço no meio
+    width: "48%",
     borderRadius: 8,
     overflow: "hidden",
     marginBottom: 10,
@@ -407,7 +417,6 @@ const styles = StyleSheet.create({
     fontWeight: "400",
     textAlign: "left",
   },
-  // Estados de Carregamento/Vazio/Erro
   loadingPlaceholder: {
     height: 100,
     justifyContent: "center",
@@ -418,7 +427,7 @@ const styles = StyleSheet.create({
     opacity: 0.8,
   },
   loadingPlaceholderHorizontal: {
-    height: 180, // Altura aproximada do carrossel
+    height: 180,
     justifyContent: "center",
     alignItems: "center",
     backgroundColor: Colors.defaultColors.black300,
