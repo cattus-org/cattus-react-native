@@ -71,7 +71,7 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
     alignItems: "center",
     paddingHorizontal: 16,
-    height: 60,
+    height: 52,
   },
 
   profileContainer: {},

@@ -115,16 +115,15 @@ export default function ProfileScreen() {
           }}
         />
         <ScrollView contentContainerStyle={styles.scrollContent}>
-          {/* Custom Back Button */}
-          <TouchableOpacity
-            onPress={() => router.replace({ pathname: "/(tabs)" })}
+          {/* <TouchableOpacity
+            onPress={handleReturnToHome}
             style={styles.customBackButton}>
             <Ionicons
               name='arrow-back'
               size={28}
               color={Colors.defaultColors.white100}
             />
-          </TouchableOpacity>
+          </TouchableOpacity> */}
 
           <View style={styles.errorContainer}>
             <Ionicons
@@ -157,9 +156,8 @@ export default function ProfileScreen() {
       />
 
       <ScrollView contentContainerStyle={styles.scrollContent}>
-        {/* Custom Back Button (Outside the central content block) */}
         <TouchableOpacity
-          onPress={() => router.back()}
+          onPress={() => router.replace("/(tabs)")}
           style={styles.customBackButton}>
           <Ionicons
             name='arrow-back'
@@ -167,16 +165,12 @@ export default function ProfileScreen() {
             color={Colors.defaultColors.white100}
           />
         </TouchableOpacity>
-
-        {/* User Info Block */}
         <View style={styles.headerBlock}>
           <Text style={styles.userName}>{user?.name || "User"}</Text>
           <Text style={styles.userEmail}>
             {user?.email || "No email registered"}
           </Text>
         </View>
-
-        {/* Profile Details Card */}
         <View style={styles.card}>
           <Text style={styles.cardTitle}>Account Details</Text>
 
@@ -191,8 +185,6 @@ export default function ProfileScreen() {
             </View>
           )}
         </View>
-
-        {/* Logout Option */}
         <TouchableOpacity style={styles.logoutButton} onPress={handleLogout}>
           <Ionicons
             name='log-out-outline'
@@ -202,8 +194,6 @@ export default function ProfileScreen() {
           <Text style={styles.logoutButtonText}>Logout</Text>
         </TouchableOpacity>
       </ScrollView>
-
-      {/* Render logout confirmation overlay if confirming */}
       {isConfirmingLogout && (
         <LogoutConfirmationOverlay
           onConfirm={performLogout}
