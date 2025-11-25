@@ -60,7 +60,7 @@ export default function CatsList() {
   };
 
   const handleCatRegister = () => {
-    router.push({ pathname: "/(pages)/cats/cat-register" });
+    router.push({ pathname: "/(pages)/cats/register/cat-register" });
   };
 
   const fabOptions = [

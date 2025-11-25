@@ -3,13 +3,14 @@ import { Colors } from "@/constants/theme";
 import { Ionicons } from "@expo/vector-icons";
 import { Image } from "expo-image";
 import { Stack, useRouter } from "expo-router";
-import { Alert, StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
 
 export default function AddOptionsScreen() {
   const router = useRouter();
 
   const handleStartNewRegistration = () => {
-    Alert.alert("clicou em adicionar gato");
+    // abrir a rota do wizard de registro
+    router.push("/cats/register/wizard");
   };
 
   const handleGoBack = () => {
