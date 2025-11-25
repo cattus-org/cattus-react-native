@@ -49,50 +49,46 @@ export const updateFavorite = async (id: number) => {
 export const createCat = async (payload: Partial<CatRegistrationDTO>) => {
   const token = await getToken();
 
-  // If there is a picture URI, send multipart/form-data
-  if (payload.picture) {
-    const form = new FormData();
-    Object.entries(payload).forEach(([key, value]) => {
-      if (value === undefined || value === null) return;
-      if (key === "picture" && typeof value === "string") {
-        // attempt to attach file
-        // expo image uri: file://... | content://...
-        // FormData in RN expects { uri, name, type }
-        const uri = value as string;
-        const name = uri.split("/").pop() || "photo.jpg";
-        const type = name.match(/\.jpg$|\.jpeg$/i)
-          ? "image/jpeg"
-          : name.match(/\.png$/i)
-          ? "image/png"
-          : "application/octet-stream";
-        // @ts-ignore
-        form.append("picture", { uri, name, type });
-        return;
-      }
+  const form = new FormData();
+  Object.entries(payload).forEach(([key, value]) => {
+    if (value === undefined || value === null) return;
+    if (key === "picture" && typeof value === "string") {
+      const uri = value as string;
+      const name = uri.split("/").pop() || "photo.jpg";
+      const type = name.match(/\.jpg$|\.jpeg$/i)
+        ? "image/jpeg"
+        : name.match(/\.png$/i)
+        ? "image/png"
+        : "application/octet-stream";
+      // @ts-ignore
+      form.append("picture", { uri, name, type });
+      return;
+    }
 
-      if (Array.isArray(value)) {
-        form.append(key, JSON.stringify(value));
-        return;
-      }
+    if (Array.isArray(value)) {
+      form.append(key, JSON.stringify(value));
+      return;
+    }
 
-      form.append(key, String(value));
-    });
+    form.append(key, String(value));
+  });
 
-    const res = await fetch(`${API_URL}/cats`, {
-      method: "POST",
-      headers: {
-        Authorization: `Bearer ${token!}`,
-      },
-      body: form,
-    });
-
-    const json: IApiResponse<ICat> = await res.json();
-    return json;
-  }
-
-  // otherwise send JSON
   const res = await fetch(`${API_URL}/cats`, {
     method: "POST",
+    headers: {
+      Authorization: `Bearer ${token!}`,
+    },
+    body: form,
+  });
+
+  const json: IApiResponse<ICat> = await res.json();
+  return json;
+};
+
+export const updateCat = async (payload: Partial<CatRegistrationDTO>) => {
+  const token = await getToken();
+  const updatedCat = await fetch(`${API_URL}/cats`, {
+    method: "PATCH",
     headers: {
       "Content-Type": "application/json",
       Authorization: `Bearer ${token!}`,
@@ -100,6 +96,6 @@ export const createCat = async (payload: Partial<CatRegistrationDTO>) => {
     body: JSON.stringify(payload),
   });
 
-  const json: IApiResponse<ICat> = await res.json();
-  return json;
+  const response: IApiResponse<ICat> = await updatedCat.json();
+  return response;
 };

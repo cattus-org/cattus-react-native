@@ -1,13 +1,13 @@
 export enum CatSex {
-  MALE = "MALE",
-  FEMALE = "FEMALE",
+  MALE = "macho",
+  FEMALE = "fêmea",
   UNKNOWN = "UNKNOWN",
 }
 
 export interface CatRegistrationDTO {
   name: string;
-  birthDate?: string; // YYYY-MM-DD
-  picture?: string; // uri
+  birthDate?: string;
+  picture?: string | Blob;
   sex: CatSex;
   observations?: string;
   vaccines?: string[];

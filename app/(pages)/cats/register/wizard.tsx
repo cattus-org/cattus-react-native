@@ -1,4 +1,5 @@
 import { DefaultButton } from "@/components/ui/buttons";
+import { createCat } from "@/services/Cats";
 import { useRouter } from "expo-router";
 import React, { useState } from "react";
 import { Alert, Text, View } from "react-native";
@@ -40,15 +41,30 @@ const WizardInner: React.FC = () => {
     setIndex((i) => Math.max(i - 1, 0));
   };
 
-  const finish = () => {
+  const [loading, setLoading] = React.useState(false);
+
+  const finish = async () => {
     const err = validateCurrent();
     if (err) return setErrors(err);
-    console.log("CatRegistration payload:", data);
-    Alert.alert(
-      "Dados prontos",
-      "Os dados estão prontos para enviar. Veja o console."
-    );
-    router.back();
+    setLoading(true);
+    try {
+      const res = await createCat(data);
+      if (res && res.success) {
+        Alert.alert("Sucesso", "Gato criado com sucesso.");
+        router.back();
+      } else {
+        Alert.alert(
+          "Erro",
+          Array.isArray(res.message)
+            ? res.message.join("\n")
+            : (res.message as string)
+        );
+      }
+    } catch (e: any) {
+      Alert.alert("Erro", e?.message || "Erro desconhecido");
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -86,6 +102,7 @@ const WizardInner: React.FC = () => {
           {index < Steps.length - 1 ? (
             <DefaultButton
               text='Prosseguir'
+              disabled={loading}
               onPress={() => {
                 const err = validateCurrent();
                 if (err) return setErrors(err);
@@ -93,7 +110,12 @@ const WizardInner: React.FC = () => {
               }}
             />
           ) : (
-            <DefaultButton text='Finalizar' onPress={finish} />
+            <DefaultButton
+              isLoading={loading}
+              text='Finalizar'
+              onPress={finish}
+              disabled={loading}
+            />
           )}
         </View>
       </View>

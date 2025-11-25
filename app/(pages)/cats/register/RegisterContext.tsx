@@ -14,7 +14,7 @@ const defaultData: CatRegistrationDTO = {
   name: "",
   birthDate: undefined,
   picture: undefined,
-  sex: CatSex.UNKNOWN,
+  sex: CatSex.MALE,
   observations: "",
   vaccines: [],
   comorbidities: [],
