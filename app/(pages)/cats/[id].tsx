@@ -88,7 +88,23 @@ export default function CatDetailsScreen() {
         />
 
         <View style={styles.infoBox}>
-          <Text style={styles.nameDetail}>{cat.name}</Text>
+          <View
+            style={{
+              flexDirection: "row",
+              justifyContent: "space-between",
+              alignItems: "center",
+            }}>
+            <Text style={styles.nameDetail}>{cat.name}</Text>
+            <TouchableOpacity
+              style={styles.editButton}
+              onPress={() => router.push(`/cats/update/${cat.id}`)}>
+              <Ionicons
+                name='create-outline'
+                size={24}
+                color={Colors.defaultColors.green300}
+              />
+            </TouchableOpacity>
+          </View>
           <View style={styles.detailRow}>
             <Ionicons
               name='time-outline'
@@ -159,6 +175,14 @@ export default function CatDetailsScreen() {
 }
 
 const styles = StyleSheet.create({
+  editButton: {
+    padding: 8,
+    borderRadius: 8,
+    backgroundColor: Colors.defaultColors.black300,
+    alignItems: "center",
+    justifyContent: "center",
+    marginLeft: 10,
+  },
   container: {
     flex: 1,
     backgroundColor: Colors.defaultColors.background,

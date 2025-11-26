@@ -99,3 +99,60 @@ export const updateCat = async (payload: Partial<CatRegistrationDTO>) => {
   const response: IApiResponse<ICat> = await updatedCat.json();
   return response;
 };
+
+export const uploadImage = async (uri: string) => {
+  const token = await getToken();
+  const form = new FormData();
+  const name = uri.split("/").pop() || "photo.jpg";
+  const type = name.match(/\.jpg$|\.jpeg$/i)
+    ? "image/jpeg"
+    : name.match(/\.png$/i)
+    ? "image/png"
+    : "application/octet-stream";
+  // @ts-ignore
+  form.append("file", { uri, name, type });
+
+  const res = await fetch(`${API_URL}/s3/upload-image`, {
+    method: "POST",
+    headers: {
+      Authorization: `Bearer ${token!}`,
+    },
+    body: form,
+  });
+
+  const json = await res.json();
+  // assume API returns { url: string } on success
+  return json?.url as string | undefined;
+};
+
+export const updateCatById = async (
+  catId: number,
+  payload: Partial<CatRegistrationDTO>
+) => {
+  const token = await getToken();
+
+  const body: any = { ...payload };
+
+  // if picture is local uri (contains file:// or starts with http?), detect and upload
+  if (
+    body.picture &&
+    typeof body.picture === "string" &&
+    body.picture.startsWith("file")
+  ) {
+    const uploadedUrl = await uploadImage(body.picture);
+    if (uploadedUrl) body.picture = uploadedUrl;
+    else delete body.picture;
+  }
+
+  const res = await fetch(`${API_URL}/cats/${catId}`, {
+    method: "PATCH",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${token!}`,
+    },
+    body: JSON.stringify(body),
+  });
+
+  const json: IApiResponse<ICat> = await res.json();
+  return json;
+};

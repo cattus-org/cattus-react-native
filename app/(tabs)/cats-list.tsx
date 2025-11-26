@@ -37,7 +37,7 @@ export default function CatsList() {
       } else {
         setError("Falha ao carregar a lista de gatos. Tente novamente.");
       }
-    } catch (err) {
+    } catch {
       setError("Erro de conexão. Não foi possível buscar os gatos.");
     } finally {
       setIsLoading(false);
@@ -67,6 +67,11 @@ export default function CatsList() {
     {
       iconName: "paw-outline" as const,
       onPress: handleCatRegister,
+      color: Colors.defaultColors.gray100,
+    },
+    {
+      iconName: "create-outline" as const,
+      onPress: () => router.push("/cats/update" as any),
       color: Colors.defaultColors.gray100,
     },
   ].reverse();
