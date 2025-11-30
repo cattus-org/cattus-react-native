@@ -4,6 +4,17 @@ import { CatRegistrationDTO } from "@/interfaces/api/CatRegistration";
 import { ICat } from "@/interfaces/api/Cats";
 import { getToken } from "@/storage/tokenManager";
 
+export const deleteCatById = async (id: number) => {
+  const token = await getToken();
+  const res = await fetch(`${API_URL}/cats/${id}/soft-delete`, {
+    method: "PATCH",
+    headers: {
+      Authorization: `Bearer ${token!}`,
+    },
+  });
+  return res.ok;
+};
+
 export const getCats = async () => {
   const token = await getToken();
   const catsResponse = await fetch(`${API_URL}/cats`, {

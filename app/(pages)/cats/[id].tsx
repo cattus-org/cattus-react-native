@@ -18,6 +18,64 @@ import {
 import { SafeAreaView } from "react-native-safe-area-context";
 
 export default function CatDetailsScreen() {
+  const handleDelete = async () => {
+    if (!cat) return;
+    // Confirmação simples
+    if (window.confirm) {
+      const confirmed = window.confirm(
+        `Tem certeza que deseja deletar o gato ${cat.name}?`
+      );
+      if (!confirmed) return;
+    } else {
+      // RN Alert
+      // @ts-ignore
+      if (global.Alert) {
+        // @ts-ignore
+        global.Alert.alert(
+          "Deletar gato",
+          `Tem certeza que deseja deletar o gato ${cat.name}?`,
+          [
+            { text: "Cancelar", style: "cancel" },
+            {
+              text: "Deletar",
+              style: "destructive",
+              onPress: async () => await deleteCat(),
+            },
+          ]
+        );
+        return;
+      }
+    }
+    await deleteCat();
+  };
+
+  const deleteCat = async () => {
+    try {
+      // Importação direta
+      const ok = await import("@/services/Cats").then((mod) =>
+        mod.deleteCatById(Number(catId))
+      );
+      if (ok) {
+        router.replace("/cats-list");
+      } else {
+        // @ts-ignore
+        if (global.Alert) {
+          // @ts-ignore
+          global.Alert.alert("Erro", "Não foi possível deletar o gato.");
+        } else {
+          console.log("Não foi possível deletar o gato.");
+        }
+      }
+    } catch (error) {
+      // @ts-ignore
+      if (global.Alert) {
+        // @ts-ignore
+        global.Alert.alert("Erro", "Não foi possível deletar o gato.");
+      } else {
+        console.log(error);
+      }
+    }
+  };
   const { id } = useLocalSearchParams();
   const catId = Array.isArray(id) ? id[0] : id;
   const router = useRouter();
@@ -95,15 +153,26 @@ export default function CatDetailsScreen() {
               alignItems: "center",
             }}>
             <Text style={styles.nameDetail}>{cat.name}</Text>
-            <TouchableOpacity
-              style={styles.editButton}
-              onPress={() => router.push(`/cats/update/${cat.id}`)}>
-              <Ionicons
-                name='create-outline'
-                size={24}
-                color={Colors.defaultColors.green300}
-              />
-            </TouchableOpacity>
+            <View style={{ flexDirection: "row", alignItems: "center" }}>
+              <TouchableOpacity
+                style={styles.editButton}
+                onPress={() => router.push(`/cats/update/${cat.id}`)}>
+                <Ionicons
+                  name='create-outline'
+                  size={24}
+                  color={Colors.defaultColors.green300}
+                />
+              </TouchableOpacity>
+              <TouchableOpacity
+                style={styles.deleteButton}
+                onPress={handleDelete}>
+                <Ionicons
+                  name='trash-outline'
+                  size={24}
+                  color={Colors.defaultColors.danger}
+                />
+              </TouchableOpacity>
+            </View>
           </View>
           <View style={styles.detailRow}>
             <Ionicons
@@ -175,6 +244,14 @@ export default function CatDetailsScreen() {
 }
 
 const styles = StyleSheet.create({
+  deleteButton: {
+    padding: 8,
+    borderRadius: 8,
+    backgroundColor: Colors.defaultColors.black300,
+    alignItems: "center",
+    justifyContent: "center",
+    marginLeft: 8,
+  },
   editButton: {
     padding: 8,
     borderRadius: 8,

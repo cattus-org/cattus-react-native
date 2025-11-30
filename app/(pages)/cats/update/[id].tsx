@@ -66,7 +66,7 @@ function UpdateActions({ catId }: { catId: number }) {
       const res = await updateCatById(catId, payload);
       if (res && res.success) {
         Alert.alert("Sucesso", "Gato atualizado com sucesso");
-        router.back();
+        router.replace("/(tabs)/cats-list");
       } else {
         Alert.alert(
           "Erro",
@@ -105,7 +105,7 @@ export default function EditCatScreen() {
         if (res.data) setCat(res.data);
       } catch {
         Alert.alert("Erro", "Não foi possível carregar o gato");
-        router.back();
+        router.replace("/(tabs)/cats-list");
       }
     };
     load();

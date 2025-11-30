@@ -37,7 +37,7 @@ const WizardInner: React.FC = () => {
   };
   const back = () => {
     setErrors(null);
-    if (index === 0) return router.back();
+    if (index === 0) return router.replace("/(tabs)/cats-list");
     setIndex((i) => Math.max(i - 1, 0));
   };
 
@@ -51,7 +51,7 @@ const WizardInner: React.FC = () => {
       const res = await createCat(data);
       if (res && res.success) {
         Alert.alert("Sucesso", "Gato criado com sucesso.");
-        router.back();
+        router.replace("/(tabs)/cats-list");
       } else {
         Alert.alert(
           "Erro",

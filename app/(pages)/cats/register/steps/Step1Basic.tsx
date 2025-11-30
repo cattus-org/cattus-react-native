@@ -24,7 +24,7 @@ const Step1Basic: React.FC = () => {
         <Text
           style={[
             sharedStyles.label,
-            { color: Colors.defaultColors.green300 },
+            { color: Colors.defaultColors.white100 },
           ]}>
           Nome
         </Text>
@@ -37,7 +37,7 @@ const Step1Basic: React.FC = () => {
         <Text
           style={[
             sharedStyles.label,
-            { color: Colors.defaultColors.green300 },
+            { color: Colors.defaultColors.white100 },
           ]}>
           Data nascimento
         </Text>
@@ -74,7 +74,7 @@ const Step1Basic: React.FC = () => {
         <Text
           style={[
             sharedStyles.label,
-            { color: Colors.defaultColors.green300 },
+            { color: Colors.defaultColors.white100 },
           ]}>
           Sexo
         </Text>
@@ -104,7 +104,7 @@ const Step1Basic: React.FC = () => {
         <Text
           style={[
             sharedStyles.label,
-            { color: Colors.defaultColors.green300 },
+            { color: Colors.defaultColors.white100 },
           ]}>
           Observação
         </Text>

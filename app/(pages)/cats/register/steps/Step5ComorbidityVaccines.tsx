@@ -21,10 +21,10 @@ function ChipsInput({ values, onAdd, onRemove, placeholder }: ChipsInputProps) {
             key={i}
             onPress={() => onRemove(i)}
             style={{
-              backgroundColor: Colors.defaultColors.purple100,
+              backgroundColor: Colors.defaultColors.green400,
               paddingHorizontal: 10,
               paddingVertical: 6,
-              borderRadius: 20,
+              borderRadius: 8,
               marginRight: 8,
               marginBottom: 8,
             }}>
@@ -38,6 +38,7 @@ function ChipsInput({ values, onAdd, onRemove, placeholder }: ChipsInputProps) {
           onChangeText={setText}
           placeholder={placeholder}
           style={{ flex: 1, marginRight: 8 }}
+          rightRadiusProps={0}
         />
         <TouchableOpacity
           onPress={() => {
@@ -47,10 +48,12 @@ function ChipsInput({ values, onAdd, onRemove, placeholder }: ChipsInputProps) {
             }
           }}
           style={{
-            backgroundColor: Colors.defaultColors.purple100,
+            backgroundColor: Colors.defaultColors.green400,
             paddingHorizontal: 16,
-            borderRadius: 20,
+            borderTopRightRadius: 8,
+            borderBottomRightRadius: 8,
             justifyContent: "center",
+            height: 52,
           }}>
           <Text style={{ color: Colors.defaultColors.white100 }}>
             Adicionar
@@ -76,7 +79,7 @@ export default function Step5ComorbidityVaccines() {
         <Text
           style={[
             sharedStyles.label,
-            { color: Colors.defaultColors.purple100 },
+            { color: Colors.defaultColors.white100 },
           ]}>
           Comorbidades
         </Text>
@@ -97,7 +100,7 @@ export default function Step5ComorbidityVaccines() {
         <Text
           style={[
             sharedStyles.label,
-            { color: Colors.defaultColors.purple100 },
+            { color: Colors.defaultColors.white100 },
           ]}>
           Vacinas
         </Text>
