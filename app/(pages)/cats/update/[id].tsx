@@ -5,6 +5,7 @@ import { getCatById, updateCatById, uploadImage } from "@/services/Cats";
 import { Stack, useLocalSearchParams, useRouter } from "expo-router";
 import React, { useEffect, useState } from "react";
 import { Alert, ScrollView, Text, View } from "react-native";
+import { SafeAreaView } from "react-native-safe-area-context";
 import { RegisterProvider, useRegister } from "../register/RegisterContext";
 import Step1Basic from "../register/steps/Step1Basic";
 import Step2Photo from "../register/steps/Step2Photo";
@@ -24,22 +25,26 @@ function EditCatInner({ cat }: { cat: ICat }) {
     setField("vaccines", cat.vaccines ?? []);
     setField("comorbidities", (cat as any).commorbidities ?? []);
     setField("weight", cat.weight ?? undefined);
-    // favorite left unchanged
   }, [cat, setField]);
 
   return (
-    <ScrollView contentContainerStyle={{ padding: 16 }}>
-      <View style={{ width: "100%", maxWidth: 600 }}>
-        <Text
-          style={[sharedStyles.title, { color: Colors.defaultColors.gray100 }]}>
-          {cat.name}
-        </Text>
-        <Step1Basic />
-        <Step2Photo />
-        <Step5ComorbidityVaccines />
-        <UpdateActions catId={cat.id} />
-      </View>
-    </ScrollView>
+    <SafeAreaView>
+      <ScrollView contentContainerStyle={{ padding: 16 }}>
+        <View style={{ width: "100%", maxWidth: 600 }}>
+          <Text
+            style={[
+              sharedStyles.title,
+              { color: Colors.defaultColors.gray100 },
+            ]}>
+            {cat.name}
+          </Text>
+          <Step1Basic />
+          <Step2Photo />
+          <Step5ComorbidityVaccines />
+          <UpdateActions catId={cat.id} />
+        </View>
+      </ScrollView>
+    </SafeAreaView>
   );
 }
 
