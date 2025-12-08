@@ -59,7 +59,7 @@ export default function LoginScreen() {
       />
 
       <DefaultTextInput
-        placeholder='email'
+        placeholder='E-mail'
         keyboardType='email-address'
         autoCapitalize='none'
         onChangeText={(email) => setEmail(email)}
@@ -67,14 +67,14 @@ export default function LoginScreen() {
       />
 
       <DefaultTextInput
-        placeholder='password'
+        placeholder='Senha'
         onChangeText={(password) => setPassword(password)}
         value={password}
         secureTextEntry={true}
       />
 
       <DefaultButton
-        text='sign in'
+        text='Entrar'
         onPress={() => handleLogin()}
         isLoading={isLoading}
         disabled={isLoading}

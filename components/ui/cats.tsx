@@ -59,7 +59,7 @@ export const CatCard = ({ cat }: { cat: ICat }) => {
                 styles.detailText,
                 { color: Colors.defaultColors.white100 },
               ]}>
-              {cat.sex === "fêmea" ? "Female" : "Male"}
+              {cat.sex === "fêmea" ? "Fêmea" : "Macho"}
             </Text>
           </View>
         </View>

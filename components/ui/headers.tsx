@@ -42,7 +42,7 @@ export const AppHeader = ({
         <Text style={styles.titleText}>{title}</Text>
 
         <TouchableOpacity
-          onPress={onNotificationPress}
+          onPress={() => null}
           style={styles.notificationContainer}>
           <Ionicons
             name='notifications-outline'

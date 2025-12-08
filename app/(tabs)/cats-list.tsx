@@ -69,11 +69,11 @@ export default function CatsList() {
       onPress: handleCatRegister,
       color: Colors.defaultColors.gray100,
     },
-    {
-      iconName: "create-outline" as const,
-      onPress: () => router.push("/cats/update" as any),
-      color: Colors.defaultColors.gray100,
-    },
+    // {
+    //   iconName: "create-outline" as const,
+    //   onPress: () => router.push("/cats/update" as any),
+    //   color: Colors.defaultColors.gray100,
+    // },
   ].reverse();
 
   const renderCat = ({ item }: { item: ICat }) => <CatCard cat={item} />;
@@ -122,11 +122,11 @@ export default function CatsList() {
 
   return (
     <View style={styles.container}>
-      <Stack.Screen options={{ title: "Cats", headerShown: false }} />
+      <Stack.Screen options={{ title: "Gatos", headerShown: false }} />
       <AppHeader
         onNotificationPress={handleNotification}
         onProfilePress={handleProfile}
-        title='Cats'
+        title='Gatos'
       />
       {renderContent()}
       <ExpandableFab options={fabOptions} />

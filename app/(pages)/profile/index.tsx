@@ -107,7 +107,7 @@ export default function ProfileScreen() {
       <SafeAreaView style={styles.safeContainer}>
         <Stack.Screen
           options={{
-            title: "My Profile",
+            title: "Perfil",
             headerStyle: { backgroundColor: Colors.defaultColors.background },
             headerTintColor: Colors.defaultColors.white100,
             headerTitleStyle: { fontWeight: "bold" },
@@ -135,7 +135,7 @@ export default function ProfileScreen() {
             <TouchableOpacity
               style={styles.retryButton}
               onPress={fetchUserProfile}>
-              <Text style={styles.retryButtonText}>Try Again</Text>
+              <Text style={styles.retryButtonText}>Tente novamente</Text>
             </TouchableOpacity>
           </View>
         </ScrollView>
@@ -147,7 +147,7 @@ export default function ProfileScreen() {
     <SafeAreaView style={styles.safeContainer}>
       <Stack.Screen
         options={{
-          title: "My Profile",
+          title: "Perfil",
           headerStyle: { backgroundColor: Colors.defaultColors.background },
           headerTintColor: Colors.defaultColors.white100,
           headerTitleStyle: { fontWeight: "bold" },
@@ -166,21 +166,21 @@ export default function ProfileScreen() {
           />
         </TouchableOpacity>
         <View style={styles.headerBlock}>
-          <Text style={styles.userName}>{user?.name || "User"}</Text>
+          <Text style={styles.userName}>{user?.name || "Usuário"}</Text>
           <Text style={styles.userEmail}>
             {user?.email || "No email registered"}
           </Text>
         </View>
         <View style={styles.card}>
-          <Text style={styles.cardTitle}>Account Details</Text>
+          <Text style={styles.cardTitle}>Detalhes da conta</Text>
 
           {user && (
             <View style={{ marginTop: 5 }}>
-              <DetailRow label='Name' value={user.name} />
-              <DetailRow label='Email' value={user.email} />
+              <DetailRow label='Nome' value={user.name} />
+              <DetailRow label='E-mail' value={user.email} />
               <DetailRow
-                label='Access Level'
-                value={user.access_level || "Standard"}
+                label='nível de acesso'
+                value={user.access_level || "Padrão"}
               />
             </View>
           )}
@@ -191,7 +191,7 @@ export default function ProfileScreen() {
             size={24}
             color={Colors.defaultColors.danger}
           />
-          <Text style={styles.logoutButtonText}>Logout</Text>
+          <Text style={styles.logoutButtonText}>Sair</Text>
         </TouchableOpacity>
       </ScrollView>
       {isConfirmingLogout && (

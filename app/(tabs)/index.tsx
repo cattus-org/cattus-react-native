@@ -12,7 +12,6 @@ import { Image } from "expo-image";
 import { Stack, useRouter } from "expo-router";
 import { useCallback, useState } from "react";
 import {
-  Alert,
   RefreshControl,
   ScrollView,
   StyleSheet,
@@ -91,7 +90,7 @@ export default function HomeScreen() {
   const [errorCameras, setErrorCameras] = useState<string | null>(null);
 
   const navigateToRegister = () =>
-    router.push({ pathname: "/(pages)/cats/cat-register" });
+    router.push({ pathname: "/(pages)/cats/register/cat-register" });
   const navigateToStats = () => console.log("Visualizar Estatísticas");
   const navigateToReports = () => console.log("Visualizar Relatórios");
   const navigateToSubscription = () => console.log("Gerenciar Assinatura");
@@ -213,11 +212,7 @@ export default function HomeScreen() {
     return (
       <View style={styles.camerasGrid}>
         {cameras.map((cam) => (
-          <HomeCameraItem
-            key={cam.id}
-            camera={cam}
-            onPress={() => Alert.alert("clicou na cam")}
-          />
+          <HomeCameraItem key={cam.id} camera={cam} onPress={() => null} />
         ))}
       </View>
     );
@@ -241,13 +236,15 @@ export default function HomeScreen() {
             colors={[Colors.defaultColors.green400]}
           />
         }>
-        <Text style={styles.greetingText}>Welcome, {userName || "User"}!</Text>
+        <Text style={styles.greetingText}>
+          Bem-vindo, {userName || "User"}!
+        </Text>
         <View style={styles.section}>
           <View style={styles.sectionHeader}>
-            <Text style={styles.sectionTitle}>Favorite cats</Text>
+            <Text style={styles.sectionTitle}>Favoritados</Text>
             <TouchableOpacity
               onPress={() => router.push({ pathname: "/(tabs)/cats-list" })}>
-              <Text style={styles.moreText}>see more →</Text>
+              <Text style={styles.moreText}>ver mais →</Text>
             </TouchableOpacity>
           </View>
 
@@ -289,39 +286,39 @@ export default function HomeScreen() {
 
         <View style={styles.section}>
           <View style={styles.sectionHeader}>
-            <Text style={styles.sectionTitle}>Installed cameras</Text>
+            <Text style={styles.sectionTitle}>Câmeras instaladas</Text>
             <TouchableOpacity
               onPress={() => router.push({ pathname: "/(tabs)/cameras" })}>
-              <Text style={styles.moreText}>see more →</Text>
+              <Text style={styles.moreText}>ver mais →</Text>
             </TouchableOpacity>
           </View>
 
           {renderCameraContent()}
         </View>
         <View style={styles.section}>
-          <Text style={styles.servicesSection}>Services</Text>
+          <Text style={styles.servicesSection}>Serviços</Text>
 
           <View style={serviceStyles.container}>
             <ServiceItem
               icon='paw-outline'
-              title='Register a new cat'
+              title='Cadastrar novo gato'
               onPress={navigateToRegister}
             />
             <ServiceItem
               icon='stats-chart-outline'
-              title='View statistics'
+              title='Ver estatísticas'
               onPress={navigateToStats}
             />
             <ServiceItem
               icon='document-text-outline'
-              title='View reports'
+              title='Ver relatórios'
               onPress={navigateToReports}
             />
-            <ServiceItem
+            {/* <ServiceItem
               icon='wallet-outline'
               title='Manage subscription'
               onPress={navigateToSubscription}
-            />
+            /> */}
           </View>
         </View>
       </ScrollView>

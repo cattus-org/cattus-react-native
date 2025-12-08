@@ -35,20 +35,20 @@ export default function AddOptionsScreen() {
           />
         </View>
 
-        <Text style={styles.mainTitle}>Register a cat</Text>
+        <Text style={styles.mainTitle}>Cadastrar gato</Text>
 
-        <Text style={styles.description}>
+        {/* <Text style={styles.description}>
           The cat registration process has 5 steps. The first two are
           **MANDATORY** and add the cat to the system, while the last three are
           optional.
-        </Text>
+        </Text> */}
 
         <View style={styles.spacer} />
         <TouchableOpacity
           style={[styles.button, styles.primaryButton]}
           onPress={handleStartNewRegistration}
           activeOpacity={0.8}>
-          <Text style={styles.primaryButtonText}>Register cat</Text>
+          <Text style={styles.primaryButtonText}>Cadastrar</Text>
           <Ionicons
             name='paw'
             size={20}
@@ -61,7 +61,7 @@ export default function AddOptionsScreen() {
           style={styles.button}
           onPress={handleGoBack}
           activeOpacity={0.7}>
-          <Text style={styles.secondaryButtonText}>Back</Text>
+          <Text style={styles.secondaryButtonText}>Voltar</Text>
         </TouchableOpacity>
       </View>
     </View>
