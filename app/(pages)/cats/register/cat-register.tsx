@@ -35,7 +35,7 @@ export default function AddOptionsScreen() {
           />
         </View>
 
-        <Text style={styles.mainTitle}>Cadastrar gato</Text>
+        <Text style={styles.mainTitle}>Cadastrar novo gato</Text>
 
         {/* <Text style={styles.description}>
           The cat registration process has 5 steps. The first two are

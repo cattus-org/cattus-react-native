@@ -9,7 +9,6 @@ import { useFocusEffect } from "@react-navigation/native";
 import { Stack, useRouter } from "expo-router";
 import { useCallback, useState } from "react";
 import {
-  Alert,
   ScrollView,
   StyleSheet,
   Text,
@@ -51,7 +50,7 @@ export default function CamerasScreen() {
   );
 
   const navigateToDetails = (id: number) => {
-    Alert.alert("clicou em camera");
+    return null;
   };
 
   if (isLoading) {

@@ -65,9 +65,9 @@ export default function CatsList() {
 
   const fabOptions = [
     {
-      iconName: "paw-outline" as const,
+      iconName: "clipboard-outline" as const,
       onPress: handleCatRegister,
-      color: Colors.defaultColors.gray100,
+      color: Colors.defaultColors.green400,
     },
     // {
     //   iconName: "create-outline" as const,

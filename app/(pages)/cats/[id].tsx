@@ -180,7 +180,7 @@ export default function CatDetailsScreen() {
               size={16}
               color={Colors.defaultColors.gray100}
             />
-            <Text style={styles.detailText}>Age: {catAge}</Text>
+            <Text style={styles.detailText}>Idade: {catAge}</Text>
           </View>
 
           <View style={styles.detailRow}>
@@ -189,7 +189,7 @@ export default function CatDetailsScreen() {
               size={16}
               color={Colors.defaultColors.gray100}
             />
-            <Text style={styles.detailText}>Sex: {formatValue(cat.sex)}</Text>
+            <Text style={styles.detailText}>Sexo: {formatValue(cat.sex)}</Text>
           </View>
           <View style={styles.detailRow}>
             <Ionicons
@@ -197,7 +197,7 @@ export default function CatDetailsScreen() {
               size={16}
               color={Colors.defaultColors.gray100}
             />
-            <Text style={styles.detailText}>Weight: {catWeight}</Text>
+            <Text style={styles.detailText}>Peso: {catWeight}</Text>
           </View>
 
           <View style={styles.detailRow}>
@@ -210,14 +210,14 @@ export default function CatDetailsScreen() {
               Status: {formatValue(cat.status)}
             </Text>
           </View>
-          <Text style={styles.sectionTitle}>Health and Care</Text>
+          <Text style={styles.sectionTitle}>Saúde e cuidados</Text>
           <View style={styles.detailRow}>
             <Ionicons
               name='bandage-outline'
               size={16}
               color={Colors.defaultColors.gray100}
             />
-            <Text style={styles.detailText}>Vaccines: {catVaccines}</Text>
+            <Text style={styles.detailText}>Vacinas: {catVaccines}</Text>
           </View>
           <View style={styles.detailRow}>
             <Ionicons
@@ -226,15 +226,15 @@ export default function CatDetailsScreen() {
               color={Colors.defaultColors.gray100}
             />
             <Text style={styles.detailText}>
-              Commorbidities: {catCommorbidities}
+              Comorbidades: {catCommorbidities}
             </Text>
           </View>
-          <Text style={styles.sectionTitle}>About {cat.name}</Text>
+          <Text style={styles.sectionTitle}>Sobre {cat.name}</Text>
           <Text style={styles.descriptionText}>
             {formatValue(cat.observations)}
           </Text>
           <Text style={styles.auditText}>
-            Registered in:{" "}
+            Registrado em:{" "}
             {formatValue(cat.createdAt ? new Date(cat.createdAt) : undefined)}
           </Text>
         </View>
